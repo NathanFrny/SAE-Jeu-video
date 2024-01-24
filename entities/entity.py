@@ -1,6 +1,6 @@
 from __future__ import annotations
 import pygame
-from constant import CASE_SIZE, BOARD_X
+from utils.constants import CASE_SIZE, BOARD_X
 from abc import ABC, abstractmethod
 from math import sqrt
 
