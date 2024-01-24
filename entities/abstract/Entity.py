@@ -1,7 +1,6 @@
 from typing import Type
 from abc import ABC, abstractmethod
-from pygame import Surface
-from components import Component, SpriteRendererComponent
+from components import Component
 
 class Entity(ABC):
     """ Abstract class for all entities.
@@ -10,14 +9,18 @@ class Entity(ABC):
         ABC : Abstract class
     """
     
-    def __init__(self, components: list[Component]):
+    def __init__(self, components: list[Component] | Component = []):
         """ Constructor of the Entity class.
 
         Args:
-            components (list[Component]): The list of components of the entity
+            components (list[Component] | Component): The list of components of the entity or a single component (convert into a list)
         """
-        # private attributes
-        self.__components = components
+        # If components is a single Component, convert it to a list
+        if isinstance(components, Component):
+            components = [components]
+        
+        # protected attributes
+        self._components = components
         
         
     # ------------------------------------------------------------------------------- #
@@ -26,10 +29,10 @@ class Entity(ABC):
     
     @property
     def components(self):
-        return self.__components
+        return self._components
     @components.setter
     def components(self, components: list[Component]):
-        self.__components = components
+        self._components = components
         
         
     # ------------------------------------------------------------------------------- #
@@ -52,7 +55,8 @@ class Entity(ABC):
         Args:
             component (Component): The component to add
         """
-        self.__components.append(component)
+        if not self.has_component(type(component)):
+            self._components.append(component)
         
     def get_component(self, component_type: Type[Component]) -> Component:
         """ Get a component from the entity.
@@ -63,7 +67,7 @@ class Entity(ABC):
         Returns:
             Component: The component of the entity
         """
-        for component in self.__components:
+        for component in self._components:
             if isinstance(component, component_type):
                 return component
             
@@ -76,7 +80,7 @@ class Entity(ABC):
         Returns:
             bool: True if the entity has the component, False otherwise
         """
-        for component in self.__components:
+        for component in self._components:
             if isinstance(component, component_type):
                 return True
         return False

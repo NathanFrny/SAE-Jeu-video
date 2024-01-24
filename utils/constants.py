@@ -29,6 +29,7 @@ PLAYER_HEALTH = 100
 PLAYER_ACTION_POINT = 3
 PLAYER_DAMAGES = 20
 PLAYER_EXIT_ACTION = False
+PLAYER_MAX_COINS = 99
 
 # Player Inventory constants
 INVENTORY_X = SCREEN_WIDTH - PLAYER_STATS_X - ICON_SIZE * 2 - 100 
@@ -67,19 +68,6 @@ BAT_ACTION_POINT = 3
 BAT_DAMAGES = 15
 BAT_COST = 15
 
-# Cases constants
-DIRT = ["images/dirt.png", "images/dirt2.png", "images/dirt3.png"]
-STONE = ["images/stone.png", "images/stone2.png"]
-WATER = ["images/water.png", "images/water2.png"]
-TRAP = "images/trap.png"
-LEVER = "images/lever2.png"
-LEVER_ACTIVATED = "images/lever1.png"
-PORTAL = "images/portal.png"
-EXIT = "images/exit2.png"
-EXIT_OPEN = "images/exit1.png"
-MARKET = "images/market.png"
-BROKEN_WALL = "images/broken_wall.png"
-
 # Items constants
 APPLE = "images/apple.png"
 RUNE = "images/rune.png"
@@ -97,3 +85,25 @@ EXIT_LEVERS = 4
 TRAPPED = False
 MOVABLE = False
 USE_ITEM = False
+
+# Tiles digit constants
+TRAP_STRENGTH = 10
+WATER_SLOWNESS = 2
+MARKET_SPAWN_PROBABILITY = 0.5
+
+# Tiles images_path constants
+FULL_GROUND = ["images/dirt1.png", "images/dirt2.png", "images/dirt3.png"]
+WALL = ["images/stone1.png", "images/stone2.png"]
+BROKEN_WALL = ["images/broken_wall.png"]
+FULL_WATER = ["images/water1.png", "images/water2.png"]
+TRAP = ["images/trap.png"]
+PORTAL = ["images/portal.png"]
+EXIT_CLOSE = ["images/exit1.png"]
+EXIT_OPEN = ["images/exit2.png"]
+MARKET = ["images/market.png"]
+LEVER_DISACTIVATED = ["images/lever1.png"]
+LEVER_ACTIVATED = ["images/lever2.png"]
+
+
+
+

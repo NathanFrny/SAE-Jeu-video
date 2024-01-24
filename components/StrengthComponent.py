@@ -1,6 +1,11 @@
 from .Component import Component
 
 class StrengthComponent(Component):
+    """ StrengthComponent of the entity.
+
+    Args:
+        Component (Component): The parent class representing a component
+    """
     
     def __init__(self, initial_strength: int):
         """ Constructor of the StrengthComponent class.
@@ -62,4 +67,5 @@ class StrengthComponent(Component):
         """
         return f"Strength: {self.__strength}"
         
+
     

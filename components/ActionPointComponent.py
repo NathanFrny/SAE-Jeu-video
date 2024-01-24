@@ -3,6 +3,9 @@ from .Component import Component
 class ActionPointComponent(Component):
     """ The ActionPointComponent class is a component that contains the action point of the entity
         and the functions to use and give action point to the entity
+        
+        Args:
+            Component (Component): The parent class representing a component
     """
     
     def __init__(self, action_points: int):

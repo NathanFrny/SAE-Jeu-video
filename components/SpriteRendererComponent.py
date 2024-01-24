@@ -5,6 +5,9 @@ from .Component import Component
 
 class SpriteRendererComponent(Component):
     """ The SpriteRendererComponent class is a component that contains the sprite of the entity
+    
+        Args:
+            Component (Component): The parent class representing a component
     """
     def __init__(self, image_path: str):
         """ Constructor of the SpriteRendererComponent class.

@@ -4,7 +4,7 @@ from ..SpriteRendererComponent import SpriteRendererComponent
 
 class TestSpriteRendererComponent(unittest.TestCase):
     def setUp(self):
-        self.sprite_renderer = SpriteRendererComponent("components/tests/image.png")
+        self.sprite_renderer = SpriteRendererComponent("images/image.png")
         
     def test_initialization(self):
         self.assertIsInstance(self.sprite_renderer.image, Surface)

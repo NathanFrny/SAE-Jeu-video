@@ -1,0 +1,5 @@
+Faire en sorte de pouvoir stocker des datas de cases pour faire de la génération en auto-tiling (random walk ?)
+    -> ScriptableObject mais en version python avec des JSON ?
+
+    -> Check le dataclass decorator en python
+

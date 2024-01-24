@@ -3,6 +3,9 @@ from .Component import Component
 class HealthComponent(Component):
     """ The HealthComponent class is a component that contains the health of the entity
         and the functions to take damage, heal and check if the entity is dead
+        
+        Args:
+            Component (Component): The parent class representing a component
     """
     
     def __init__(self, max_health: int):
@@ -56,6 +59,14 @@ class HealthComponent(Component):
                 bool: True if the entity is dead, False otherwise
         """
         return self._current_health <= 0
+    
+    def is_full_health(self) -> bool:
+        """ Check if the entity is at full health.
+        
+            Returns:
+                bool: True if the entity is at full health, False otherwise
+        """
+        return self._current_health == self.__max_health
     
     def take_damage(self, damage: int):
         """ Take damage from an entity.

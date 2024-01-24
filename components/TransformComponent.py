@@ -3,6 +3,9 @@ from .Component import Component
 class TransformComponent(Component):
     """ The TransformComponent class is a component that contains the position of the entity on the grid
         and the functions to move the entity and get the distance between the entity and a target position
+        
+        Args:
+            Component (Component): The parent class representing a component
     """
     def __init__(self, position: list[int, int]):
         """ Constructor of the TransformComponent class.
