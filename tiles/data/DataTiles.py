@@ -1,4 +1,4 @@
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from typing import Tuple, List, Dict
 from random import choice
 from utils.constants import *
@@ -19,7 +19,7 @@ class TileData:
 
 @dataclass
 class GroundTileData(TileData):
-    variants: Dict[str, List[str]] = {
+    variants: Dict[str, List[str]] = field(default_factory=lambda:{
         "full": [FULL_GROUND],
         "corner_top_left": [""],
         "corner_top_right": [""],
@@ -31,9 +31,9 @@ class GroundTileData(TileData):
         "bottom": [""],
         "left_right": [""],
         "top_bottom": [""]
-    }
+    })
     
-    positions: Tuple[Tuple[int, int, int], Tuple[int, int, int], Tuple[int, int, int]] = {
+    positions: Tuple[Tuple[int, int, int], Tuple[int, int, int], Tuple[int, int, int]] = field(default_factory=lambda:{
         "full_position": ((5, 0, 5),
                           (0, 9, 0),
                           (5, 0, 5)),
@@ -67,18 +67,18 @@ class GroundTileData(TileData):
         "top_bottom_position": ((5, 1, 5),
                                 (0, 9, 0),
                                 (5, 1, 5))
-    }
+    })
 
-
+@dataclass
 class WallTileData(TileData):
-    variants: Dict[List[str]] = {"full": [WALL],
-                                 "broken": [BROKEN_WALL]}                                                           
+    variants: Dict[str, List[str]] = field(default_factory=lambda:{"full": [WALL],
+                                 "broken": [BROKEN_WALL]})                                                     
     
-    
+@dataclass 
 class WaterTileData(TileData):
     slowness: int = WATER_SLOWNESS
     
-    variants: Dict[List[str]] = {
+    variants: Dict[str, List[str]] = field(default_factory=lambda:{
         "full": [FULL_WATER],
         "corner_top_left": [""],
         "corner_top_right": [""],
@@ -90,9 +90,9 @@ class WaterTileData(TileData):
         "bottom": [""],
         "left_right": [""],
         "top_bottom": [""]
-    }
+    })
     
-    positions: Tuple[Tuple[int, int, int], Tuple[int, int, int], Tuple[int, int, int]] = {
+    positions: Tuple[Tuple[int, int, int], Tuple[int, int, int], Tuple[int, int, int]] = field(default_factory=lambda:{
         "full_position": ((5, 0, 5),
                           (0, 9, 0),
                           (5, 0, 5)),
@@ -126,26 +126,31 @@ class WaterTileData(TileData):
         "top_bottom_position": ((5, 1, 5),
                                 (0, 9, 0),
                                 (5, 1, 5))
-    }
-    
+    })
+  
+@dataclass  
 class TrapTileData(TileData):
-    variants: Dict[List[str]] = {"full": [TRAP]}
+    variants: Dict[str, List[str]] = field(default_factory=lambda:{"full": [TRAP]})
     strength: int = TRAP_STRENGTH
 
+@dataclass
 class PortalTileData(TileData):
-    variants: Dict[List[str]] = {"full": [PORTAL]}
-    
+    variants: Dict[str, List[str]] = field(default_factory=lambda:{"full": [PORTAL]})
+   
+@dataclass 
 class MarketTileData(TileData):
-    variants: Dict[List[str]] = {"full": [MARKET]}
+    variants: Dict[str, List[str]] = field(default_factory=lambda:{"full": [MARKET]})
     spawn_probability: float = MARKET_SPAWN_PROBABILITY
     
+@dataclass
 class ExitTileData(TileData):
-    variants: Dict[List[str]] = {"close": [EXIT_CLOSE],
-                                 "open": [EXIT_OPEN]}
+    variants: Dict[str, List[str]] = field(default_factory=lambda:{"close": [EXIT_CLOSE],
+                                 "open": [EXIT_OPEN]})
     number_players_out: int = 0
-    
+ 
+@dataclass   
 class LeverTileData(TileData):
-    variants: Dict[List[str]] = {"close": [LEVER_DISACTIVATED],
-                                 "open": [LEVER_ACTIVATED]}
+    variants: Dict[str, List[str]] = field(default_factory=lambda:{"close": [LEVER_DISACTIVATED],
+                                 "open": [LEVER_ACTIVATED]})
     number_activated: bool = 0
     
