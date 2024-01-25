@@ -1,5 +1,6 @@
 from __future__ import annotations
-from utils.constants import NB_COL, NB_ROW
+from utils.constants import NB_COL, NB_ROW, CASE_SIZE, BOARD_X
+from pygame import image, transform, Surface
 
 class GraphicGameboard:
     _instance = None # static variable to hold the singleton instance of the graphic gameboard
@@ -11,7 +12,7 @@ class GraphicGameboard:
             GraphicGameboard: the graphic gameboard instance of the game
         """
         if not cls._instance:
-            cls._instance = super(GraphicGameboard, cls).__new__(cls, *args, **kwargs)
+            cls._instance = super(GraphicGameboard, cls).__new__(cls)
         return cls._instance
     
     def __init__(self):
@@ -49,25 +50,44 @@ class GraphicGameboard:
     # ----------------------------------- Methods ----------------------------------- #
     # ------------------------------------------------------------------------------- #
     
-    def get_tile(self, row, col):
-        """ Get the tile at the given position
+    def get_image(self, row, col) -> Surface:
+        """ Get the image at the given position
 
         Args:
-            row (int): the row of the tile
-            col (int): the column of the tile
+            row (int): the row of the image
+            col (int): the column of the image
 
         Returns:
-            Tile: the tile at the given position
+            Surface: the image at the given position
         """
         return self._graphic_grid[row][col]
     
-    def set_tile(self, row, col, tile):
-        """ Set the tile at the given position
+    def set_image(self, row, col, image_path: str):
+        """ Set the image at the given position
 
         Args:
-            row (int): the row of the tile
-            col (int): the column of the tile
-            tile (Tile): the tile to set
+            row (int): the row of the image
+            col (int): the column of the image
+            image_path (str): the image to load and set
         """
-        self._graphic_grid[row][col] = tile
+        img = image.load(image_path)
+        img = transform.scale(img, (CASE_SIZE, CASE_SIZE))
+        self._graphic_grid[row][col] = img
+        
+    def draw(self, screen):
+        for row in range(self.nb_row):
+            for col in range(self.nb_col):
+                x = BOARD_X + col * CASE_SIZE
+                y = row * CASE_SIZE
+                screen.blit(self._graphic_grid[row][col], (x, y))
+        
+    def __str__(self) -> str:
+        for row in range(self._nb_row):
+            for col in range(self._nb_col):
+                print(self._graphic_grid[row][col], end=" ")
+            print()
+        return ''
+    
+    
+            
     

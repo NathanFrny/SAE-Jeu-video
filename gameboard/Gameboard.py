@@ -1,6 +1,7 @@
 from __future__ import annotations
 from utils.constants import NB_COL, NB_ROW
 from tiles import GroundTile
+from tiles.data.DataTiles import *
 
 class Gameboard:
     _instance = None # static variable to hold the singleton instance of the gameboard
@@ -12,12 +13,12 @@ class Gameboard:
             Gameboard: the gameboard instance of the game
         """
         if not cls._instance:
-            cls._instance = super(Gameboard, cls).__new__(cls, *args, **kwargs)
+            cls._instance = super(Gameboard, cls).__new__(cls)
         return cls._instance
     
     def __init__(self):
         self._nb_row, self._nb_col = NB_ROW, NB_COL
-        self._grid = [[GroundTile() for _ in range(self._nb_col)] for _ in range(self._nb_row)]
+        self._grid = [[GroundTile(GroundTileData()) for _ in range(self._nb_col)] for _ in range(self._nb_row)]
         
     
     # ------------------------------------------------------------------------------- #
@@ -92,6 +93,13 @@ class Gameboard:
             bool: True if the position is on the board, False otherwise
         """
         return 0 <= row < self._nb_row and 0 <= col < self._nb_col
+    
+    def __str__(self) -> str:
+        for row in range(self._nb_row):
+            for col in range(self._nb_col):
+                print(self._grid[row][col], end="")
+            print()
+        return ''
         
     
         

@@ -3,18 +3,18 @@ from .data.DataTiles import TileData
 
 class Tile(ABC):
     def __init__(self, dataTile: TileData):
-        self._dataTile: TileData = dataTile
+        self._data_tile: TileData = dataTile
         
     # ------------------------------------------------------------------------------- #
     # ------------------------------ Getters & Setters ------------------------------ #
     # ------------------------------------------------------------------------------- #
     
     @property
-    def dataTile(self) -> TileData:
-        return self._dataTile
-    @dataTile.setter
+    def data_tile(self) -> TileData:
+        return self._data_tile
+    @data_tile.setter
     def dataTile(self, dataTile: TileData):
-        self._dataTile = dataTile
+        self._data_tile = dataTile
     
     
     

@@ -1,8 +1,8 @@
 from __future__ import annotations
-from .Gameboard import Gameboard
 from .GraphicGameboard import GraphicGameboard
+from .RoomBuilder import RoomBuilder
 
-class GameboardDrawer:
+class GameboardAdapter:
     _instance = None # static variable to hold the singleton instance of the graphic gameboard
 
     def __new__(cls, *args, **kwargs):
@@ -12,23 +12,24 @@ class GameboardDrawer:
             GraphicGameboard: the graphic gameboard instance of the game
         """
         if not cls._instance:
-            cls._instance = super(GameboardDrawer, cls).__new__(cls, *args, **kwargs)
+            cls._instance = super(GameboardAdapter, cls).__new__(cls)
         return cls._instance
     
-    def __init__(self, gameboard: Gameboard, graphic_gameboard: GraphicGameboard):
-        self._gameboard = gameboard
-        self._graphic_gameboard = graphic_gameboard
+    def __init__(self):
+        self._room_builder = RoomBuilder()
+        self._gameboard = self._room_builder.room
+        self._graphic_gameboard = self._room_builder.graphic_room
         
     # ------------------------------------------------------------------------------- #
     # ------------------------------ Getters & Setters ------------------------------ #
     # ------------------------------------------------------------------------------- #
     
     @property
-    def gameboard(self):
-        return self._gameboard
-    @gameboard.setter
-    def gameboard(self, gameboard):
-        self._gameboard = gameboard
+    def room_builder(self):
+        return self._room_builder
+    @room_builder.setter
+    def room_builder(self, room_builder):
+        self._room_builder = room_builder
         
     @property
     def graphic_gameboard(self):
@@ -37,8 +38,19 @@ class GameboardDrawer:
     def graphic_gameboard(self, graphic_gameboard):
         self._graphic_gameboard = graphic_gameboard
         
+    @property
+    def gameboard(self):
+        return self._gameboard
+    @gameboard.setter
+    def gameboard(self, gameboard):
+        self._gameboard = gameboard
+        
     # ------------------------------------------------------------------------------- #
     # ----------------------------------- Methods ----------------------------------- #
     # ------------------------------------------------------------------------------- #
     
-    
+    def draw(self):
+        """ Draw the gameboard
+        """
+        self.room_builder.ground_initialization()
+        self.room_builder.set_walls()

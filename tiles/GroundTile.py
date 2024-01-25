@@ -6,3 +6,10 @@ from utils.PyDecoratorFunc import register_tile_type
 class GroundTile(Tile):
     def __init__(self, dataTile: TileData):
         super().__init__(dataTile)
+        
+    # ------------------------------------------------------------------------------- #
+    # ----------------------------------- Methods ----------------------------------- #
+    # ------------------------------------------------------------------------------- #
+    
+    def __str__(self) -> str:
+        return "Ground"
