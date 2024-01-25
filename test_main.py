@@ -7,7 +7,7 @@ def main():
     pygame.init()
 
     # Créez une fenêtre de la taille du plateau de jeu
-    screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
+    screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT - 10))
 
     # Créez une instance de GameboardAdapter
     adapter = GameboardAdapter()

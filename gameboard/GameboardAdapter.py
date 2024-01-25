@@ -15,7 +15,7 @@ class GameboardAdapter:
             cls._instance = super(GameboardAdapter, cls).__new__(cls)
         return cls._instance
     
-    def __init__(self):
+    def __init__(self):        
         self._room_builder = RoomBuilder()
         self._gameboard = self._room_builder.room
         self._graphic_gameboard = self._room_builder.graphic_room
@@ -52,5 +52,4 @@ class GameboardAdapter:
     def draw(self):
         """ Draw the gameboard
         """
-        self.room_builder.ground_initialization()
-        self.room_builder.set_walls()
+        self.room_builder.build()

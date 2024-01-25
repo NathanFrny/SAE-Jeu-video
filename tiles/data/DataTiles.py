@@ -22,16 +22,16 @@ class TileData:
 class GroundTileData(TileData):
     variants: Dict[str, List[str]] = field(default_factory=lambda:{
         "full": FULL_GROUND,
-        "corner_top_left": [""],
-        "corner_top_right": [""],
-        "corner_bottom_left": [""],
-        "corner_bottom_right": [""],
-        "left": [""],
-        "right": [""],
-        "top": [""],
-        "bottom": [""],
-        "left_right": [""],
-        "top_bottom": [""]
+        "corner_top_left": TOP_LEFT_GROUND,
+        "corner_top_right": TOP_RIGHT_GROUND,
+        "corner_bottom_left": BOTTOM_LEFT_GROUND,
+        "corner_bottom_right": BOTTOM_RIGHT_GROUND,
+        "left": LEFT_GROUND,
+        "right": RIGHT_GROUND,
+        "top": TOP_GROUND,
+        "bottom": BOTTOM_GROUND,
+        "left_right": LEFT_RIGHT_GROUND,
+        "top_bottom": TOP_BOTTOM_GROUND
     })
     
     positions: Tuple[Tuple[int, int, int], Tuple[int, int, int], Tuple[int, int, int]] = field(default_factory=lambda:{

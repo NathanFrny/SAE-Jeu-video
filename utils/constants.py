@@ -92,7 +92,21 @@ WATER_SLOWNESS = 2
 MARKET_SPAWN_PROBABILITY = 0.5
 
 # Tiles images_path constants
-FULL_GROUND = ["images/dirt1.png", "images/dirt2.png", "images/dirt3.png"]
+# Dirts Ground ---- Basic Biome ---
+FULL_GROUND = ["images/dirt/dirt1_full.png", "images/dirt/dirt2_full.png", "images/dirt/dirt3_full.png"]
+TOP_LEFT_GROUND = ["images/dirt/dirt1_top_left.png", "images/dirt/dirt2_top_left.png", "images/dirt/dirt3_top_left.png"]
+TOP_RIGHT_GROUND = ["images/dirt/dirt1_top_right.png", "images/dirt/dirt2_top_right.png", "images/dirt/dirt3_top_right.png"]
+BOTTOM_LEFT_GROUND = ["images/dirt/dirt1_bottom_left.png", "images/dirt/dirt2_bottom_left.png", "images/dirt/dirt3_bottom_left.png"]
+BOTTOM_RIGHT_GROUND = ["images/dirt/dirt1_bottom_right.png", "images/dirt/dirt2_bottom_right.png", "images/dirt/dirt3_bottom_right.png"]
+LEFT_GROUND = ["images/dirt/dirt1_left.png", "images/dirt/dirt2_left.png", "images/dirt/dirt3_left.png"]
+RIGHT_GROUND = ["images/dirt/dirt1_right.png", "images/dirt/dirt2_right.png", "images/dirt/dirt3_right.png"]
+TOP_GROUND = ["images/dirt/dirt1_top.png", "images/dirt/dirt2_top.png", "images/dirt/dirt3_top.png"]
+BOTTOM_GROUND = ["images/dirt/dirt1_bottom.png", "images/dirt/dirt2_bottom.png", "images/dirt/dirt3_bottom.png"]
+TOP_BOTTOM_GROUND = ["images/dirt/dirt1_top_bottom.png", "images/dirt/dirt2_top_bottom.png", "images/dirt/dirt3_top_bottom.png"]
+LEFT_RIGHT_GROUND = ["images/dirt/dirt1_left_right.png", "images/dirt/dirt2_left_right.png", "images/dirt/dirt3_left_right.png"]
+# ----------------------------------
+
+
 WALL = ["images/stone1.png", "images/stone2.png"]
 BROKEN_WALL = ["images/broken_wall.png"]
 FULL_WATER = ["images/water1.png", "images/water2.png"]
