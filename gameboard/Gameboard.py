@@ -72,6 +72,19 @@ class Gameboard:
         """
         self._grid[row][col] = tile
         
+    def is_tile(self, row, col, tile):
+        """ Check if the tile at the given position is of the given type
+
+        Args:
+            row (int): the row of the tile
+            col (int): the column of the tile
+            tile (Tile): the tile to check
+
+        Returns:
+            bool: True if the tile is of the given type, False otherwise
+        """
+        return isinstance(self._grid[row][col], type(tile))
+        
     def get_neighbours(self, row, col):
         """ Get the neighbours of the tile at the given position
         """

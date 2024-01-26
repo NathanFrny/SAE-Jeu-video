@@ -81,6 +81,7 @@ TITLE = "images/title.png"
 
 
 # Exit Constants
+LEVER_COUNT = 4
 EXIT_LEVERS = 4
 TRAPPED = False
 MOVABLE = False
@@ -112,8 +113,8 @@ BROKEN_WALL = ["images/broken_wall.png"]
 FULL_WATER = ["images/water1.png", "images/water2.png"]
 TRAP = ["images/trap.png"]
 PORTAL = ["images/portal.png"]
-EXIT_CLOSE = ["images/exit1.png"]
-EXIT_OPEN = ["images/exit2.png"]
+EXIT_CLOSE = ["images/exit2.png"]
+EXIT_OPEN = ["images/exit1.png"]
 MARKET = ["images/market.png"]
 LEVER_DISACTIVATED = ["images/lever1.png"]
 LEVER_ACTIVATED = ["images/lever2.png"]

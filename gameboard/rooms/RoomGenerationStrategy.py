@@ -13,3 +13,15 @@ class RoomGenerationStrategy(ABC):
     @abstractmethod
     def set_ground(self):
         pass
+    
+    @abstractmethod
+    def set_levers(self):
+        pass
+    
+    @abstractmethod
+    def set_exit(self):
+        pass
+    
+    @abstractmethod
+    def set_traps(self):
+        pass

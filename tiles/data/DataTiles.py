@@ -31,7 +31,9 @@ class GroundTileData(TileData):
         "top": TOP_GROUND,
         "bottom": BOTTOM_GROUND,
         "left_right": LEFT_RIGHT_GROUND,
-        "top_bottom": TOP_BOTTOM_GROUND
+        "top_bottom": TOP_BOTTOM_GROUND,
+        "left_top_right": FULL_GROUND,
+        "top_right_bottom": FULL_GROUND
     })
     
     positions: Tuple[Tuple[int, int, int], Tuple[int, int, int], Tuple[int, int, int]] = field(default_factory=lambda:{
@@ -67,7 +69,13 @@ class GroundTileData(TileData):
                                 (5, 0, 5)),
         "top_bottom": ((5, 1, 5),
                                 (0, 9, 0),
-                                (5, 1, 5))
+                                (5, 1, 5)),
+        "left_top_right": ((5, 1, 5),
+                           (1, 9, 1),
+                           (5, 0, 5)),
+        "top_right_bottom": ((5, 1, 5),
+                             (0, 9, 1),
+                             (5, 1, 5))
     })
 
 @dataclass

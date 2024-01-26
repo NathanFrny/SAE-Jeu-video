@@ -2,7 +2,9 @@ from .RoomGenerationStrategy import RoomGenerationStrategy
 from .configuration.GroundConfigurationStrategy import GroundConfigurationStrategy
 from gameboard import Gameboard, GraphicGameboard
 from tiles.data.DataTiles import *
-from tiles import GroundTile, WallTile
+from typing import Tuple
+from utils.PyFunc import distance_calcul
+from tiles import GroundTile, WallTile, LeverTile, ExitTile
 from random import randint
 from tiles import TileFactory
 
@@ -190,3 +192,209 @@ class BasicRoomStrategy(RoomGenerationStrategy):
                 else:
                     image = tile.dataTile.random_tile(tile.dataTile.variants["full"])
                 self._graphic_room.set_image(row, col, image)
+                
+    # --------------------------------- #
+    
+    # --- Levers generation methods --- #
+    
+    def set_levers(self, lever_count: int = 4):
+        lever_count = lever_count
+        placed_levers = 0
+        lever_positions = []
+
+        while placed_levers < lever_count:
+            row = randint(1, self._room.nb_row - 2)
+            col = randint(1, self._room.nb_col - 2)
+
+            # Vérifier si la position est valide (ni un mur, ni un levier déjà placé)
+            if self.is_valid_lever_position(row, col):
+                lever_tile = self._tile_factory.create_tile("lever", LeverTileData())
+                self._room.set_tile(row, col, lever_tile)
+                lever_positions.append([row, col])
+
+                # Définir l'image du levier dans la représentation graphique
+                lever_image_variant = lever_tile.dataTile.variants["close"]  # Ou une autre clé si vous avez plusieurs variantes
+                image = lever_tile.dataTile.random_tile(lever_image_variant)
+                self._graphic_room.set_image(row, col, image)
+
+                placed_levers += 1
+        self.check_and_reposition_levers(lever_positions)
+                
+    def is_valid_lever_position(self, row: int, col: int) -> bool:
+        return not self._room.is_tile(row, col, WallTile) and not self._room.is_tile(row, col, LeverTile)
+    
+    def check_and_reposition_levers(self, lever_positions: List[List[int]], min_distance: float = 5.0):
+        for i in range(len(lever_positions)):
+            for j in range(i + 1, len(lever_positions)):
+                if distance_calcul(lever_positions[i], lever_positions[j]) < min_distance:
+                    new_position = self.find_new_position_for_lever(lever_positions, min_distance)
+                    self.update_lever_position(lever_positions[j], new_position, lever_positions)  # Passer lever_positions comme argument
+
+
+    def find_new_position_for_lever(self, lever_positions: List[List[int]], min_distance: float) -> List[int]:
+        while True:
+            new_row = randint(1, self._room.nb_row - 2)
+            new_col = randint(1, self._room.nb_col - 2)
+            new_position = [new_row, new_col]
+
+            # Vérifier si la nouvelle position est valide et pas trop proche des autres leviers
+            if self.is_valid_lever_position(new_row, new_col) and all(distance_calcul(new_position, pos) >= min_distance for pos in lever_positions):
+                return new_position
+
+    def update_lever_position(self, old_position: List[int], new_position: List[int], lever_positions: List[List[int]]):
+        # Supprimer l'ancien levier de la grille et de la liste des positions
+        self.set_ground_tile(old_position[0], old_position[1])
+        lever_positions.remove(old_position)  # Retirer l'ancienne position de la liste
+
+        # Placer le nouveau levier et l'ajouter à la liste des positions
+        self.set_lever_tile(new_position[0], new_position[1])
+        lever_positions.append(new_position)  # Ajouter la nouvelle position à la liste
+
+
+    def set_lever_tile(self, row: int, col: int):
+        lever_tile = self._tile_factory.create_tile("lever", LeverTileData())
+        self._room.set_tile(row, col, lever_tile)
+        lever_image_variant = lever_tile.dataTile.variants["close"]
+        image = lever_tile.dataTile.random_tile(lever_image_variant)
+        self._graphic_room.set_image(row, col, image)
+
+    
+    # ------------------------------- #
+    
+    # --- Exit generation methods --- #
+    
+    def set_exit(self):
+        """ Initialize the exit of the room with correct sprites based on ground positions. """
+        exit_row, exit_col = self.find_exit_position()
+        self.set_exit_sprite(exit_row, exit_col)
+        
+    def find_exit_position(self):
+        """ Find a ground tile to start the connectivity check.
+        """
+        while True:
+            row = randint(1, self._room.nb_row - 2)
+            col = randint(1, self._room.nb_col - 2)
+            if self.is_valid_exit_position(row, col):
+                return row, col
+            
+    def is_valid_exit_position(self, row: int, col: int) -> bool:
+        return not self._room.is_tile(row, col, WallTile) and not self._room.is_tile(row, col, LeverTile)
+    
+    def set_exit_sprite(self, row: int, col: int):
+        """ Set the sprite for a ground tile based on its configuration. 
+        
+            Args:
+                row (int): the row of the tile
+                col (int): the column of the tile
+        """
+        exit_tile = self._tile_factory.create_tile("exit", ExitTileData())
+        self._room.set_tile(row, col, exit_tile)
+        exit_image_variant = exit_tile.dataTile.variants["close"]
+        image = exit_tile.dataTile.random_tile(exit_image_variant)
+        self._graphic_room.set_image(row, col, image)
+        
+    # ------------------------------ #
+    
+    # --- Trap generation methods --- #
+    
+    def set_traps(self):
+        """ Initialize the traps of the room with correct sprites based on ground positions.
+        """
+        num_trap_packs = randint(2, 3)
+
+        for _ in range(num_trap_packs):
+            num_traps = randint(5, 6)
+            start_row, start_col = self.find_valid_trap_start()
+
+            for _ in range(num_traps):
+                if self.is_valid_trap_position(start_row, start_col):
+                    self.set_trap_sprite(start_row, start_col)
+                else:
+                    start_row, start_col = self.find_valid_trap_start()
+
+                direction = self.choose_adjacent_direction(start_row, start_col)
+                start_row += direction[0]
+                start_col += direction[1]
+
+    def choose_adjacent_direction(self, row: int, col: int) -> Tuple[int, int]:
+        """ Choose a direction for a trap to be placed in an adjacent tile.
+
+        Args:
+            row (int): the row of the tile
+            col (int): the column of the tile
+
+        Returns:
+            Tuple[int, int]: the direction to move in
+        """
+        directions = [(0, 1), (1, 0), (0, -1), (-1, 0)]
+        while True:
+            direction = choice(directions)
+            new_row, new_col = row + direction[0], col + direction[1]
+
+            if 1 <= new_row < self._room.nb_row - 1 and 1 <= new_col < self._room.nb_col - 1:
+                if self.is_valid_trap_position(new_row, new_col):
+                    return direction
+                else:
+                    directions.remove(direction)  
+                    if not directions:  
+                        break
+        return (0, 0)
+
+    def find_valid_trap_start(self):
+        """ Find a valid position for a trap
+        
+            Returns:
+                Tuple(int, int): the row and column of the position
+        """
+        attempts = 0 
+        while attempts < 100: 
+            row = randint(1, self._room.nb_row - 2)
+            col = randint(1, self._room.nb_col - 2)
+            if self.is_valid_trap_position(row, col):
+                return row, col
+            attempts += 1
+        raise ValueError("Impossible de trouver une position valide pour un piège après 100 tentatives.")
+                
+    def is_valid_trap_position(self, row: int, col: int) -> bool:
+        """ Check if the given position is a valid position for a trap.
+
+        Args:
+            row (int): the row of the tile
+            col (int): the column of the tile
+
+        Returns:
+            bool: True if the position is valid, False otherwise
+        """
+        if row < 1 or row >= self._room.nb_row - 1 or col < 1 or col >= self._room.nb_col - 1:
+            return False
+        return (
+            not self._room.is_tile(row, col, WallTile) and
+            not self._room.is_tile(row, col, ExitTile)
+        )
+                
+    def find_valid_trap_start(self)-> Tuple[int, int]:
+        """ Find a valid position for a trap
+
+        Returns:
+            Tuple(int, int): the row and column of the position
+        """
+        while True:
+            row = randint(1, self._room.nb_row - 2)
+            col = randint(1, self._room.nb_col - 2)
+            if self.is_valid_trap_position(row, col):
+                return row, col
+            
+    def set_trap_sprite(self, row: int, col: int):
+        """ Set the sprite for a ground tile based on its configuration. 
+        
+            Args:
+                row (int): the row of the tile
+                col (int): the column of the tile
+        """
+        trap_tile = self._tile_factory.create_tile("trap", TrapTileData())
+        self._room.set_tile(row, col, trap_tile)
+        trap_image_variant = trap_tile.dataTile.variants["full"]
+        image = trap_tile.dataTile.random_tile(trap_image_variant)
+        self._graphic_room.set_image(row, col, image)
+    
+    

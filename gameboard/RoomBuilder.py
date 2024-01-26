@@ -1,8 +1,7 @@
 from .Gameboard import Gameboard
 from .GraphicGameboard import GraphicGameboard
-from tiles import TileFactory, GroundTile, WallTile
 from tiles.data.DataTiles import *
-from random import shuffle, randint
+from utils.constants import LEVER_COUNT
 from gameboard.rooms.BasicRoomStrategy import BasicRoomStrategy
 
 class RoomBuilder:
@@ -55,6 +54,9 @@ class RoomBuilder:
         """
         self._strategy.initialize_room()
         self._strategy.set_walls()
+        self._strategy.set_exit()
+        self._strategy.set_traps()
+        self._strategy.set_levers(LEVER_COUNT)
         self._strategy.set_ground()
 
     

@@ -24,6 +24,7 @@ class TileFactory:
         tile_class = TileFactory.tile_types.get(type)
         
         if not tile_class:
+            print(TileFactory.tile_types)
             raise ValueError(f"Type de tuile non reconnu: {type}")
         
         return tile_class(dataTile)
