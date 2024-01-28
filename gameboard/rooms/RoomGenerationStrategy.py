@@ -29,3 +29,7 @@ class RoomGenerationStrategy(ABC):
     @abstractmethod
     def set_water(self):
         pass
+
+    @abstractmethod
+    def set_players(self):
+        pass

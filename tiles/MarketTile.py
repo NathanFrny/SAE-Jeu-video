@@ -7,3 +7,5 @@ class MarketTile(Tile):
     def __init__(self, dataTile: TileData):
         super().__init__(dataTile)
         
+    def __str__(self):
+        return "market"

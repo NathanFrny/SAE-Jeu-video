@@ -6,3 +6,6 @@ from utils.PyDecoratorFunc import register_tile_type
 class TrapTile(Tile):
     def __init__(self, dataTile: TileData):
         super().__init__(dataTile)
+
+    def __str__(self):
+        return "trap"

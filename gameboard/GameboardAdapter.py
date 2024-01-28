@@ -1,4 +1,6 @@
 from __future__ import annotations
+from typing import List
+from entities import Player
 from .GraphicGameboard import GraphicGameboard
 from .RoomBuilder import RoomBuilder
 
@@ -15,8 +17,8 @@ class GameboardAdapter:
             cls._instance = super(GameboardAdapter, cls).__new__(cls)
         return cls._instance
     
-    def __init__(self):        
-        self._room_builder = RoomBuilder()
+    def __init__(self, players: List[Player]):        
+        self._room_builder = RoomBuilder(players)
         self._gameboard = self._room_builder.room
         self._graphic_gameboard = self._room_builder.graphic_room
         

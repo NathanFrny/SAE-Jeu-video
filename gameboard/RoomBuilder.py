@@ -1,6 +1,7 @@
 from .Gameboard import Gameboard
 from .GraphicGameboard import GraphicGameboard
 from tiles.data.DataTiles import *
+from entities import Player
 from utils.constants import LEVER_COUNT
 from gameboard.rooms.BasicRoomStrategy import BasicRoomStrategy
 
@@ -8,12 +9,13 @@ class RoomBuilder:
     """ This class is used to build a room
     """
     
-    def __init__(self):
+    def __init__(self, players: List[Player]):
         """ Initialize the room builder
         """
         self._room = Gameboard()
         self._graphic_room = GraphicGameboard()
         self._strategy = BasicRoomStrategy(self._room, self._graphic_room)
+        self._players = players
         
     # ------------------------------------------------------------------------------- #
     # ------------------------------ Getters & Setters ------------------------------ #
@@ -39,6 +41,13 @@ class RoomBuilder:
     @strategy.setter
     def strategy(self, strategy):
         self._strategy = strategy
+
+    @property
+    def players(self):
+        return self._players
+    @players.setter
+    def players(self, players):
+        self._players = players
         
     # ------------------------------------------------------------------------------- #
     # ----------------------------------- Methods ----------------------------------- #
@@ -59,7 +68,9 @@ class RoomBuilder:
         self._strategy.set_exit()
         self._strategy.set_levers(LEVER_COUNT)
         self._strategy.set_ground()
+        self._strategy.set_players(self._players)
 
+    
     
 
 
