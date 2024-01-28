@@ -9,18 +9,14 @@ class Entity(ABC):
         ABC : Abstract class
     """
     
-    def __init__(self, components: list[Component] | Component = []):
+    def __init__(self):
         """ Constructor of the Entity class.
 
         Args:
             components (list[Component] | Component): The list of components of the entity or a single component (convert into a list)
         """
-        # If components is a single Component, convert it to a list
-        if isinstance(components, Component):
-            components = [components]
-        
         # protected attributes
-        self._components = components
+        self._components = []
         
         
     # ------------------------------------------------------------------------------- #
@@ -43,9 +39,10 @@ class Entity(ABC):
     
     @abstractmethod
     def update(self):
-        """ Update the entity.
+        """ Update the entity (by calling all is components).
         """
-        pass
+        for component in self._components:
+            component.update()
     
     # -- Concrete methods -- #
     

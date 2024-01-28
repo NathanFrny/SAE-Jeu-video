@@ -7,13 +7,13 @@ class StrengthComponent(Component):
         Component (Component): The parent class representing a component
     """
     
-    def __init__(self, initial_strength: int):
+    def __init__(self, initial_strength: int, parent_entity):
         """ Constructor of the StrengthComponent class.
 
         Args:
             strength (int): The strength of the entity
         """
-        super().__init__() # call the constructor of the parent class
+        super().__init__(parent_entity) # call the constructor of the parent class
         
         # private attributes
         self.__initial_strength = initial_strength
@@ -41,6 +41,9 @@ class StrengthComponent(Component):
     # ---------------------------------- Methods ------------------------------------ #
     # ------------------------------------------------------------------------------- #
     
+    def update(self):
+        pass
+
     def reset_strength(self):
         """ Reset the strength of the entity.
         """

@@ -8,13 +8,13 @@ class CoinsComponent(Component):
         Component (Component): The parent class representing a component
     """
 
-    def __init__(self, coins: int):
+    def __init__(self, coins: int, parent_entity):
         """ Constructor of the CoinsComponent class.
 
         Args:
             coins (int): The number of coins of the player
         """
-        super().__init__()
+        super().__init__(parent_entity)
         self._coins = coins
         
     # ------------------------------------------------------------------------------- #
@@ -32,6 +32,9 @@ class CoinsComponent(Component):
     # ---------------------------------- Methods ------------------------------------ #
     # ------------------------------------------------------------------------------- #
     
+    def update(self):
+        pass
+
     def add_coins(self, coins: int):
         """ Add coins to the player.
 

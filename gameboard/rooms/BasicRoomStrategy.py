@@ -1,10 +1,11 @@
 from .RoomGenerationStrategy import RoomGenerationStrategy
 from .configuration.GroundConfigurationStrategy import GroundConfigurationStrategy
+from .configuration.WaterConfigurationStrategy import WaterConfigurationStrategy
 from gameboard import Gameboard, GraphicGameboard
 from tiles.data.DataTiles import *
 from typing import Tuple
 from utils.PyFunc import distance_calcul
-from tiles import GroundTile, WallTile, LeverTile, ExitTile
+from tiles import GroundTile, WallTile, LeverTile, ExitTile, WaterTile
 from random import randint
 from tiles import TileFactory
 
@@ -18,6 +19,7 @@ class BasicRoomStrategy(RoomGenerationStrategy):
         self._tile_factory = TileFactory()
         self._tile_config_strategies = {
             'ground': GroundConfigurationStrategy(room),
+            'water': WaterConfigurationStrategy(room)
         }
         
     # ------------------------------------------------------------------------------- #
@@ -396,5 +398,97 @@ class BasicRoomStrategy(RoomGenerationStrategy):
         trap_image_variant = trap_tile.dataTile.variants["full"]
         image = trap_tile.dataTile.random_tile(trap_image_variant)
         self._graphic_room.set_image(row, col, image)
-    
-    
+
+    # -------------------------------- #
+    # --- Water generation methods --- #
+        
+    def set_water(self):
+        num_water_groups = randint(2, 3)
+        water_positions = []
+
+        for _ in range(num_water_groups):
+            num_water_tiles = randint(5, 6)
+            start_row, start_col = self.find_valid_water_start()
+
+            for _ in range(num_water_tiles):
+                if self.is_valid_water_position(start_row, start_col):
+                    self.set_water_tile(start_row, start_col, "full")
+                    water_positions.append((start_row, start_col))
+
+                direction = self.choose_water_adjacent_direction(start_row, start_col, "water")
+                start_row += direction[0]
+                start_col += direction[1]
+
+        for position in water_positions:
+            row, col = position
+            self.update_water_tile_configuration(row, col)
+
+    def update_water_tile_configuration(self, row: int, col: int):
+        """ Mettre à jour la configuration d'une tuile d'eau en fonction de ses tuiles voisines. """
+        tile = self._room.get_tile(row, col)
+        if isinstance(tile, WaterTile):
+            configuration_strategy = self._tile_config_strategies.get('water')
+            if configuration_strategy:
+                configuration_key = configuration_strategy.get_configuration_key(row, col)
+                image = tile.dataTile.random_tile(tile.dataTile.variants.get(configuration_key, ["full"]))
+                self._graphic_room.set_image(row, col, image)
+
+    def set_water_tile(self, row: int, col: int, configuration_key: str):
+        """ Placer une tuile d'eau avec une configuration spécifiée. """
+        water_tile = self._tile_factory.create_tile("water", WaterTileData())
+        image = water_tile.dataTile.random_tile(water_tile.dataTile.variants[configuration_key])
+        self._room.set_tile(row, col, water_tile)
+        self._graphic_room.set_image(row, col, image)
+
+    def choose_water_adjacent_direction(self, row: int, col: int, tile_type: str) -> Tuple[int, int]:
+        """ Choose a direction for a tile to be placed in an adjacent tile.
+
+        Args:
+            row (int): the row of the tile
+            col (int): the column of the tile
+            tile_type (str): the type of tile ('water' or 'trap')
+
+        Returns:
+            Tuple[int, int]: the direction to move in
+        """
+        directions = [(0, 1), (1, 0), (0, -1), (-1, 0)]
+        while directions:
+            direction = choice(directions)
+            new_row, new_col = row + direction[0], col + direction[1]
+
+            valid_position_check = self.is_valid_water_position if tile_type == "water" else self.is_valid_trap_position
+            if 1 <= new_row < self._room.nb_row - 1 and 1 <= new_col < self._room.nb_col - 1:
+                if valid_position_check(new_row, new_col):
+                    return direction
+                else:
+                    directions.remove(direction)
+        return (0, 0)  # Retourner une direction par défaut si aucune direction n'est valide
+
+    def find_valid_water_start(self) -> Tuple[int, int]:
+        """ Find a valid position for a water tile.
+
+        Returns:
+            Tuple[int, int]: the row and column of the position
+        """
+        attempts = 0
+        while attempts < 100:
+            row = randint(1, self._room.nb_row - 2)
+            col = randint(1, self._room.nb_col - 2)
+            if self.is_valid_water_position(row, col):
+                return row, col
+            attempts += 1
+        raise ValueError("Impossible de trouver une position valide pour une tuile d'eau après 100 tentatives.")
+
+    def is_valid_water_position(self, row: int, col: int) -> bool:
+        """ Check if the given position is a valid position for a water tile.
+
+        Args:
+            row (int): the row of the tile
+            col (int): the column of the tile
+
+        Returns:
+            bool: True if the position is valid, False otherwise
+        """
+        if row < 1 or row >= self._room.nb_row - 1 or col < 1 or col >= self._room.nb_col - 1:
+            return False
+        return not self._room.is_tile(row, col, WallTile)

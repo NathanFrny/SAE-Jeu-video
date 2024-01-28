@@ -89,16 +89,21 @@ class WaterTileData(TileData):
     
     variants: Dict[str, List[str]] = field(default_factory=lambda:{
         "full": FULL_WATER,
-        "corner_top_left": [""],
-        "corner_top_right": [""],
-        "corner_bottom_left": [""],
-        "corner_bottom_right": [""],
-        "left": [""],
-        "right": [""],
-        "top": [""],
-        "bottom": [""],
-        "left_right": [""],
-        "top_bottom": [""]
+        "corner_top_left": TOP_LEFT_WATER,
+        "corner_top_right": TOP_RIGHT_WATER,
+        "corner_bottom_left": BOTTOM_LEFT_WATER,
+        "corner_bottom_right": BOTTOM_RIGHT_WATER,
+        "left": LEFT_WATER,
+        "right": RIGHT_WATER,
+        "top": TOP_WATER,
+        "bottom": BOTTOM_WATER,
+        "left_right": LEFT_RIGHT_WATER,
+        "top_bottom": TOP_BOTTOM_WATER,
+        "left_top_right": LEFT_TOP_RIGHT_WATER,
+        "top_right_bottom": TOP_RIGHT_BOTTOM_WATER,
+        "left_right_bottom": LEFT_RIGHT_BOTTOM_WATER,
+        "left_top_bottom": LEFT_TOP_BOTTOM_WATER,
+        "left_top_right_bottom": LEFT_TOP_RIGHT_BOTTOM_WATER
     })
     
     positions: Tuple[Tuple[int, int, int], Tuple[int, int, int], Tuple[int, int, int]] = field(default_factory=lambda:{
@@ -134,7 +139,22 @@ class WaterTileData(TileData):
                                 (5, 0, 5)),
         "top_bottom": ((5, 1, 5),
                                 (0, 9, 0),
-                                (5, 1, 5))
+                                (5, 1, 5)),
+        "left_top_right": ((5, 1, 5),
+                           (1, 9, 1),
+                           (5, 0, 5)),
+        "top_right_bottom": ((5, 1, 5),
+                             (0, 9, 1),
+                             (5, 1, 5)),
+        "left_right_bottom": ((5, 0, 5),
+                              (1, 9, 1),
+                              (5, 1, 5)),
+        "left_top_bottom": ((5, 1, 5),
+                            (1, 9, 0),
+                            (5, 1, 5)),
+        "left_top_right_bottom": ((5, 1, 5),
+                                  (1, 9, 1),
+                                  (5, 1, 5))
     })
   
 @dataclass  

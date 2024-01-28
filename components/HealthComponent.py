@@ -8,13 +8,13 @@ class HealthComponent(Component):
             Component (Component): The parent class representing a component
     """
     
-    def __init__(self, max_health: int):
+    def __init__(self, max_health: int, parent_entity):
         """ Constructor of the HealthComponent class.
 
         Args:
             max_health (int): The maximum amount of health that can be reached
         """
-        super().__init__() # call the constructor of the parent class
+        super().__init__(parent_entity) # call the constructor of the parent class
         
         # private attributes
         self.__max_health = max_health
@@ -51,6 +51,9 @@ class HealthComponent(Component):
     # ------------------------------------------------------------------------------- #
     # ---------------------------------- Methods ------------------------------------ #
     # ------------------------------------------------------------------------------- #
+            
+    def update(self):
+        pass
     
     def is_dead(self) -> bool:
         """ Check if the entity is dead.

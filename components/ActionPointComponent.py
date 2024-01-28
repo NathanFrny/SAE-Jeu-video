@@ -8,13 +8,13 @@ class ActionPointComponent(Component):
             Component (Component): The parent class representing a component
     """
     
-    def __init__(self, action_points: int):
+    def __init__(self, action_points: int, parent_entity):
         """ Constructor of the ActionComponent class.
 
         Args:
             action_point (int): The amount of action point that the entity has
         """
-        super().__init__() # call the constructor of the parent class
+        super().__init__(parent_entity) # call the constructor of the parent class
         
         # private attributes
         self.__max_action_points = action_points
@@ -49,7 +49,9 @@ class ActionPointComponent(Component):
     # ---------------------------------- Methods ------------------------------------ #
     # ------------------------------------------------------------------------------- #
     
-    
+    def update(self):
+        pass
+
     def reset_action_point(self):
         """ Reset the action point of the entity.
         """

@@ -54,8 +54,9 @@ class RoomBuilder:
         """
         self._strategy.initialize_room()
         self._strategy.set_walls()
-        self._strategy.set_exit()
         self._strategy.set_traps()
+        self._strategy.set_water()
+        self._strategy.set_exit()
         self._strategy.set_levers(LEVER_COUNT)
         self._strategy.set_ground()
 
