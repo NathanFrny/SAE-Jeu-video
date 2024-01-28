@@ -479,7 +479,7 @@ class BasicRoomStrategy(RoomGenerationStrategy):
             if self.is_valid_water_position(row, col):
                 return row, col
             attempts += 1
-        raise ValueError("Impossible de trouver une position valide pour une tuile d'eau après 100 tentatives.")
+        raise ValueError("Impossible to find a valid position for a water tile after 100 attempts.")
 
     def is_valid_water_position(self, row: int, col: int) -> bool:
         """ Check if the given position is a valid position for a water tile.
@@ -499,71 +499,67 @@ class BasicRoomStrategy(RoomGenerationStrategy):
     # Players generation methods #
 
     def set_players(self, players: List[Player]):
-        """ Place players on adjacent ground tiles starting from a random ground tile.
+        """ Set the players on the gameboard.
 
         Args:
             players (List[Player]): List of player entities to place on the gameboard.
         """
-        start_position = self.get_random_ground_position()
-        current_position = start_position
+        available_positions = self.get_available_ground_positions()
+        if not available_positions:
+            raise ValueError("No available ground positions")
+
+        current_position = choice(available_positions)
 
         for player in players:
-            # Assurez-vous que la position actuelle est une GroundTile et non occupée
             while not isinstance(self._room.get_tile(*current_position), GroundTile) or self._room.get_tile(*current_position).is_player_on:
-                # Déplacer à une position adjacente
-                current_position = self.move_to_adjacent_position(current_position)
+                current_position = self.move_to_adjacent_position(current_position, available_positions)
 
-            # Placez le joueur sur la position actuelle
             transform_component = player.get_component(TransformComponent)
             if transform_component:
-                transform_component.position = [current_position[1], current_position[0]]
+                transform_component.position = current_position
 
-            # Marquer la case comme occupée par un joueur
             self._room.get_tile(*current_position).is_player_on = True
+            available_positions.remove(current_position)
 
     def get_random_ground_position(self):
-        """ Trouver une position aléatoire de GroundTile sur le plateau.
+        """ Find a random position on the ground.
 
         Returns:
-            tuple[int, int]: Position aléatoire de GroundTile.
+            tuple[int, int]: random position on the ground.
         """
         available_positions = self.get_available_ground_positions()
         if not available_positions:
-            raise ValueError("Pas de cases de terrain disponibles")
+            raise ValueError("No available ground positions")
         return choice(available_positions)
 
-    def move_to_adjacent_position(self, position):
-        """ Déplacez-vous à une position adjacente valide (GroundTile non occupée).
+    def move_to_adjacent_position(self, position, available_positions):
+        """ Move to an adjacent position.
 
         Args:
-            position (tuple[int, int]): La position actuelle.
+            position (tuple[int, int]): actual position.
 
         Returns:
-            tuple[int, int]: Nouvelle position adjacente valide.
+            tuple[int, int]: new position.
         """
         row, col = position
-        directions = [(0, 1), (1, 0), (0, -1), (-1, 0)]  # Haut, droite, bas, gauche
+        directions = [(0, 1), (1, 0), (0, -1), (-1, 0)]
 
-        # Essayer toutes les directions jusqu'à trouver une position valide
         shuffled_directions = sample(directions, len(directions))
         for direction in shuffled_directions:
             new_row = row + direction[0]
             new_col = col + direction[1]
 
-            # Vérifiez si la nouvelle position est à l'intérieur des limites et est une GroundTile non occupée
-            if 0 <= new_row < self._room.nb_row and 0 <= new_col < self._room.nb_col:
-                tile = self._room.get_tile(new_row, new_col)
-                if isinstance(tile, GroundTile) and not tile.is_player_on:
-                    return (new_row, new_col)
+            new_position = (new_row, new_col)
+            if new_position in available_positions:
+                return new_position
 
-        # Si aucune position adjacente valide n'est trouvée, retourner la position actuelle
-        return position
+        return choice(available_positions) if available_positions else position
 
     def get_available_ground_positions(self):
-        """ Retourne une liste de positions des cases de terrain disponibles.
+        """ Get the available positions on the ground.
 
         Returns:
-            list[tuple[int, int]]: Liste des positions des cases de terrain disponibles.
+            list[tuple[int, int]]: list of available positions on the ground.
         """
         available_positions = []
         for row in range(self._room.nb_row):

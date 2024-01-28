@@ -5,4 +5,6 @@
 # TODO - Implémenter les différentes entities concrètes
 # Faire en sorte que ces entités soit initialisées (à l'aide de leur SpriteRenderer) dans le jeu (à part des gameboard -> utiliser les pygame.sprite.Group() / pygame.sprite.Sprite
 
-# FIXME - Voir Pourquoi il dans BasicRoomStrategy et dans set_players() je suis obligé d'inverser le tuple de position pour que le player se positionne correctement
+# TODO - Implémenter un MovementManager qui gère les déplacements des entités (abstract)
+# Faire un PlayerMovementManager qui hérite de MovementManager et qui gère les déplacements des joueurs
+# Faire un EnemyMovementManager qui hérite de MovementManager et qui gère les déplacements des ennemis (abstract ?)

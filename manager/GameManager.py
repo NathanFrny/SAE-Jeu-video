@@ -2,6 +2,7 @@ from entities import Player
 from gameboard import GameboardAdapter
 from components import SpriteRendererComponent
 from utils.constants import SCREEN_HEIGHT, SCREEN_WIDTH
+from manager.InputManager import InputManager
 import pygame
 
 class GameManager:
@@ -11,6 +12,7 @@ class GameManager:
         for i in range(players_count):
             self.players.append(Player("Player " + str(i + 1), "images/player" + str(i + 1) + ".png"))
         self.adapter = GameboardAdapter(self.players)
+        self.input_manager = InputManager()
     
     def start(self):
         pygame.init()
@@ -23,6 +25,7 @@ class GameManager:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     running = False
+                self.input_manager.get_input(self.players[0], event)
             screen.fill((0, 0, 0))
             self.adapter.graphic_gameboard.draw(screen)
             for player in self.players:

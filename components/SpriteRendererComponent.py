@@ -70,8 +70,8 @@ class SpriteRendererComponent(Component):
         """
         transform_component = self.parent_entity.get_component(TransformComponent)
         if transform_component:
-            self.__rect.x = transform_component.position[0] * CASE_SIZE + BOARD_X
-            self.__rect.y = transform_component.position[1] * CASE_SIZE
+            self.__rect.x = transform_component.position[1] * CASE_SIZE + BOARD_X
+            self.__rect.y = transform_component.position[0] * CASE_SIZE
 
     def image_resize(self, size: tuple[int, int]):
         """ Resize the image sprite of the entity.

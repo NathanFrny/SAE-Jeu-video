@@ -33,7 +33,7 @@ class CoinsComponent(Component):
     # ------------------------------------------------------------------------------- #
     
     def update(self):
-        pass
+        self._coins += 1
 
     def add_coins(self, coins: int):
         """ Add coins to the player.
