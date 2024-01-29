@@ -7,4 +7,6 @@ from .TrapTile import TrapTile
 from .WaterTile import WaterTile
 from .PortalTile import PortalTile
 from .WallTile import WallTile
+from .LeverTile import LeverTile
+from .ExitTile import ExitTile
 

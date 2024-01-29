@@ -83,7 +83,7 @@ class BasicRoomStrategy(RoomGenerationStrategy):
         """
         for row in range(1, self._room.nb_row - 1):
             for col in range(1, self._room.nb_col - 1):
-                if randint(1, 4) == 1:  
+                if randint(1, 5) == 1:  
                     self.set_wall_tile(row, col)
                     if not self.ensure_global_connectivity():
                         self.set_ground_tile(row, col)  

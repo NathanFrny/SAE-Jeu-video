@@ -1,5 +1,5 @@
 import unittest
-from ..Player import Player
+from entities import Player
 from components import HealthComponent, ActionPointComponent, StrengthComponent, TransformComponent, SpriteRendererComponent, CoinsComponent
 
 class TestPlayer(unittest.TestCase):

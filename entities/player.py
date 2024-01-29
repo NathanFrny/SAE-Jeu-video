@@ -1,5 +1,5 @@
 from .abstract import Entity
-from components import Component, HealthComponent, ActionPointComponent, StrengthComponent, TransformComponent, SpriteRendererComponent, CoinsComponent
+from components import HealthComponent, ActionPointComponent, StrengthComponent, TransformComponent, SpriteRendererComponent, CoinsComponent
 from utils.constants import PLAYER_HEALTH, PLAYER_ACTION_POINT, PLAYER_DAMAGES
 
 class Player(Entity):

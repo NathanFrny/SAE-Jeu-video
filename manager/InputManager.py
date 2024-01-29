@@ -10,7 +10,7 @@ class InputManager:
     # ----------------------------------- Methods ----------------------------------- #
     # ------------------------------------------------------------------------------- #
 
-    def get_input(self, player: Player, event: pygame.Event):
+    def get_input(self, player: Player, event: pygame.event):
         """ Get the input of the player.
 
         Args:
@@ -25,5 +25,5 @@ class InputManager:
                 player_rect = sprite_renderer.sprite.rect
 
                 if player_rect.collidepoint(mouse_pos): # Click on the player sprite
-                    ...
+                    return "getAllActions"
                 
