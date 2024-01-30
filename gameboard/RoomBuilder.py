@@ -67,6 +67,8 @@ class RoomBuilder:
         self._strategy.set_water()
         self._strategy.set_exit()
         self._strategy.set_levers(LEVER_COUNT)
+        self._strategy.set_portals()
+        self._strategy.set_market()
         self._strategy.set_ground()
         self._strategy.set_players(self._players)
 

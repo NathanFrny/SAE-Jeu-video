@@ -7,8 +7,8 @@ from gameboard import Gameboard, GraphicGameboard
 from tiles.data.DataTiles import *
 from typing import Tuple
 from utils.PyFunc import distance_calcul
-from tiles import GroundTile, WallTile, LeverTile, ExitTile, WaterTile
-from random import randint, sample
+from tiles import GroundTile, WallTile, LeverTile, ExitTile, WaterTile, PortalTile, MarketTile
+from random import randint, sample, random
 from tiles import TileFactory
 
 class BasicRoomStrategy(RoomGenerationStrategy):
@@ -299,6 +299,85 @@ class BasicRoomStrategy(RoomGenerationStrategy):
         
     # ------------------------------ #
     
+    # --- Portal generation methods --- #
+        
+    def set_portals(self):
+        """ Initialize two portals in the room, ensuring they are sufficiently apart."""
+        portal_positions = []
+
+        # Générer les positions des deux portails
+        while len(portal_positions) < 2:
+            row = randint(1, self._room.nb_row - 2)
+            col = randint(1, self._room.nb_col - 2)
+
+            if self.is_valid_portal_position(row, col):
+                portal_positions.append([row, col])
+                self.set_portal_sprite(row, col)
+
+        # Vérifier et repositionner les portails si nécessaire
+        self.check_and_reposition_portals(portal_positions)
+
+    def check_and_reposition_portals(self, portal_positions: List[List[int]], min_distance: float = 5.0):
+        if distance_calcul(portal_positions[0], portal_positions[1]) < min_distance:
+            new_position = self.find_new_position_for_portal(portal_positions, min_distance)
+            self.update_portal_position(portal_positions[1], new_position, portal_positions)
+
+    def find_new_position_for_portal(self, portal_positions: List[List[int]], min_distance: float) -> List[int]:
+        while True:
+            new_row = randint(1, self._room.nb_row - 2)
+            new_col = randint(1, self._room.nb_col - 2)
+            new_position = [new_row, new_col]
+
+            if self.is_valid_portal_position(new_row, new_col) and all(distance_calcul(new_position, pos) >= min_distance for pos in portal_positions):
+                return new_position
+            
+    def is_valid_portal_position(self, row: int, col: int) -> bool:
+        return not self._room.is_tile(row, col, WallTile) and not self._room.is_tile(row, col, LeverTile) and not self._room.is_tile(row, col, ExitTile) and not self._room.is_tile(row, col, PortalTile)
+
+    def update_portal_position(self, old_position: List[int], new_position: List[int], portal_positions: List[List[int]]):
+        # Mettre à jour la position et le sprite du portail
+        self.set_ground_tile(*old_position)
+        portal_positions.remove(old_position)
+        self.set_portal_sprite(*new_position)
+        portal_positions.append(new_position)
+
+    def set_portal_sprite(self, row: int, col: int):
+        """ Set the sprite for a ground tile based on its configuration. 
+        
+            Args:
+                row (int): the row of the tile
+                col (int): the column of the tile
+        """
+        portal_tile = self._tile_factory.create_tile("portal", PortalTileData())
+        self._room.set_tile(row, col, portal_tile)
+        portal_image_variant = portal_tile.dataTile.variants["full"]
+        image = portal_tile.dataTile.random_tile(portal_image_variant)
+        self._graphic_room.set_image(row, col, image)
+    
+    # ------------------------------- #
+        
+    # --- Market generation methods --- #
+        
+    def set_market(self):
+        if random() < MarketTileData.spawn_probability:
+            available_positions = self.get_available_ground_positions()
+            self.place_market_tile(*choice(available_positions))
+
+    def place_market_tile(self, row: int, col: int):
+        """ Place un marché sur la tuile spécifiée.
+
+        Args:
+            row (int): la ligne de la tuile
+            col (int): la colonne de la tuile
+        """
+        market_tile = self._tile_factory.create_tile("market", MarketTileData())
+        self._room.set_tile(row, col, market_tile)
+        market_image_variant = market_tile.dataTile.variants["full"]
+        image = market_tile.dataTile.random_tile(market_image_variant)
+        self._graphic_room.set_image(row, col, image)
+
+    # ------------------------------- #
+
     # --- Trap generation methods --- #
     
     def set_traps(self):
