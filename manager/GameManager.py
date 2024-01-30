@@ -1,6 +1,6 @@
 from entities import Player
 from gameboard import GameboardAdapter
-from components import SpriteRendererComponent, TransformComponent
+from components import SpriteRendererComponent, ActionPointComponent
 from utils.constants import SCREEN_HEIGHT, SCREEN_WIDTH, CASE_SIZE, BOARD_X
 from utils.PyFunc import getAllActions
 from manager.InputManager import InputManager
@@ -23,16 +23,32 @@ class GameManager:
         pygame.display.flip()
         running = True
         possible_actions = {}
+        current_player_index = 0
+        self.players[current_player_index].get_component(ActionPointComponent).reset_action_point()
+
 
         while running:
+            current_player = self.players[current_player_index]
+            action_points = current_player.get_component(ActionPointComponent).current_action_points
             
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     running = False
+
+                player_input = self.input_manager.get_input(current_player, event)
                     
-                if (self.input_manager.get_input(self.players[0], event) == "getAllActions"):
-                    possible_actions = getAllActions(self.players[0], self.adapter.gameboard)
-                    print(getAllActions(self.players[0], self.adapter.gameboard))
+                if (player_input == "getAllActions"):
+                    possible_actions = getAllActions(current_player, self.adapter.gameboard)
+                    print(getAllActions(current_player, self.adapter.gameboard))
+
+                if (player_input == "skip" or action_points <= 0):
+                    current_player_index = (current_player_index + 1) % len(self.players)
+                    current_player = self.players[current_player_index]
+                    current_player.get_component(ActionPointComponent).reset_action_point()
+                    screen.fill((0, 0, 0))
+                    self.adapter.graphic_gameboard.draw(screen)
+
+                # Ajoutez ici la détection de l'input et l'appel de la méthode
                     
             screen.fill((0, 0, 0))
             self.adapter.graphic_gameboard.draw(screen)
@@ -43,6 +59,7 @@ class GameManager:
                 for position in possible_actions["PossibleLever"]:
                     pygame.draw.circle(screen, (0, 255, 0), (position[1] * CASE_SIZE + BOARD_X, position[0] * CASE_SIZE), 5)
             
+            
             for player in self.players:
                 player.update()
                 sprite = player.get_component(SpriteRendererComponent)
@@ -50,3 +67,8 @@ class GameManager:
                     screen.blit(sprite.image, sprite.rect)
                     
             pygame.display.flip()
+
+
+    # Implémentez ici la logique de sauvegarde (players et gameboard dans un premier temps)
+    def save_game(self):
+        ...
