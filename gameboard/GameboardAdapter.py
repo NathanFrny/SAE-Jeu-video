@@ -1,8 +1,11 @@
 from __future__ import annotations
 from typing import List
-from entities import Player
+from entities import Player, Entity
+from tiles import WallTile, LeverTile, TrapTile
+from components import TransformComponent
 from .GraphicGameboard import GraphicGameboard
 from .RoomBuilder import RoomBuilder
+from random import choice
 
 class GameboardAdapter:
     _instance = None # static variable to hold the singleton instance of the graphic gameboard
@@ -37,7 +40,7 @@ class GameboardAdapter:
     def graphic_gameboard(self):
         return self._graphic_gameboard
     @graphic_gameboard.setter
-    def graphic_gameboard(self, graphic_gameboard):
+    def graphic_gameboard(self, graphic_gameboard: GraphicGameboard):
         self._graphic_gameboard = graphic_gameboard
         
     @property
@@ -55,3 +58,25 @@ class GameboardAdapter:
         """ Draw the gameboard
         """
         self.room_builder.build()
+        
+    def spawn_entities_randomly(self, entities_list: list[Entity]):
+        available_tiles = self.get_available_tiles()
+        for entity in entities_list:
+            position = choice(available_tiles)
+            entity.get_component(TransformComponent).position = position
+    
+    def get_available_tiles(self):
+        """ Get all the available tiles on the gameboard.
+
+        Returns:
+            List[Tile]: All the available tiles on the gameboard
+        """
+        grid = self.gameboard.grid
+        available_list = []
+        for row in range(self.gameboard.nb_row):
+            for col in range(self.gameboard.nb_col):
+                tile = grid[row][col]
+                if not isinstance(tile, WallTile) and not isinstance(tile, LeverTile) and not isinstance(tile, TrapTile) and not tile.is_player_on and not tile.entity:
+                    available_list.append([row, col])
+                    
+        return available_list
