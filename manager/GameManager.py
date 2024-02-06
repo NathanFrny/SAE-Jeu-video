@@ -5,6 +5,8 @@ from utils.constants import SCREEN_HEIGHT, SCREEN_WIDTH, CASE_SIZE, BOARD_X
 from utils.PyFunc import getAllActions
 from manager.InputManager import InputManager
 import pygame
+import json
+
 
 class GameManager:
 
@@ -49,6 +51,10 @@ class GameManager:
                     self.adapter.graphic_gameboard.draw(screen)
 
                 # Ajoutez ici la détection de l'input et l'appel de la méthode
+                
+                if (player_input == "save"):
+                    self.save_game("save.json")
+                    
                     
             screen.fill((0, 0, 0))
             self.adapter.graphic_gameboard.draw(screen)
@@ -70,5 +76,42 @@ class GameManager:
 
 
     # Implémentez ici la logique de sauvegarde (players et gameboard dans un premier temps)
-    def save_game(self):
-        ...
+    # Implémentez ici la logique de sauvegarde (players et gameboard dans un premier temps)
+    def save_game(self, file_path):
+        game_data = {
+            "players": [self.players],
+            "gameboard": []
+        }
+
+        # Parcourir chaque rangée de la grille
+        for row in self.adapter.gameboard.grid:
+            row_data = []
+
+            # Parcourir chaque élément dans la rangée
+            for element in row:
+                # Convertir chaque élément en une liste d'attributs
+                row_data.append(toJSONGrid(element))
+
+            # Ajouter le type de l'élément dans le JSON avant ses attributs
+            game_data["gameboard"].append(row_data)
+
+        with open(file_path, 'w') as file:
+            json.dump(game_data, file)
+
+        
+def toJSONGrid(instance):
+    attributes = {"__type__": type(instance).__name__}  # Ajouter le type de l'instance comme clé spéciale
+    for attr in dir(instance):
+        if not callable(getattr(instance, attr)) and not attr.startswith("__"):
+            value = getattr(instance, attr)
+            # Convertir la valeur en une représentation JSON compatible
+            if isinstance(value, (list, dict, str, int, float, bool, type(None))):
+                attributes[attr] = value
+            else:
+                attributes[attr] = str(value)  # Convertir les autres types en chaînes de caractères
+    return attributes
+
+
+def toJSONPlayer(instance):
+    
+

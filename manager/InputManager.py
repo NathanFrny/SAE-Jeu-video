@@ -32,6 +32,10 @@ class InputManager:
             if event.key == pygame.K_RIGHT:
                 
                 return "skip"
-            
+        
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_s:
+                print("S click")
+                return "save"
         # Ajoutez ici l'input pour enclencher la sauvegarde
                 
