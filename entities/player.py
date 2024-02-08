@@ -1,5 +1,7 @@
 from .abstract import Entity
 from components import HealthComponent, ActionPointComponent, StrengthComponent, TransformComponent, SpriteRendererComponent, CoinsComponent
+
+from components import PlayerActionsComponent
 from utils.constants import PLAYER_HEALTH, PLAYER_ACTION_POINT, PLAYER_DAMAGES
 
 class Player(Entity):
@@ -13,6 +15,7 @@ class Player(Entity):
         self.add_component(TransformComponent([0, 0], self))
         self.add_component(SpriteRendererComponent(image_path, self))
         self.add_component(CoinsComponent(0, self))
+        self.add_component(PlayerActionsComponent(self))
         # ------------------------ #
         
         self._name = name

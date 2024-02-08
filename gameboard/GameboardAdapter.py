@@ -64,6 +64,7 @@ class GameboardAdapter:
         for entity in entities_list:
             position = choice(available_tiles)
             entity.get_component(TransformComponent).position = position
+            self.gameboard.grid[position[0]][position[1]].entity = entity
     
     def get_available_tiles(self):
         """ Get all the available tiles on the gameboard.

@@ -1,6 +1,6 @@
 from entities import Player, Slime, Golem, Skeleton, Bat
 from gameboard import GameboardAdapter
-from components import SpriteRendererComponent, ActionPointComponent
+from components import SpriteRendererComponent, ActionPointComponent, PlayerActionsComponent
 from utils.constants import *
 from utils.PyFunc import getAllActions
 from manager.InputManager import InputManager
@@ -48,6 +48,8 @@ class GameManager:
         self.adapter.draw()
         self.random_monster_spawning()
         self.adapter.graphic_gameboard.draw(screen)
+        for player in self.players:
+            player.get_component(PlayerActionsComponent).gameboard = self.adapter.gameboard
         pygame.display.flip()
         running = True
         possible_actions = {}
@@ -66,8 +68,10 @@ class GameManager:
                 player_input = self.input_manager.get_input(current_player, event)
                     
                 if (player_input == "getAllActions"):
-                    possible_actions = getAllActions(current_player, self.adapter.gameboard)
-                    print(getAllActions(current_player, self.adapter.gameboard))
+                    player_actions_component = current_player.get_component(PlayerActionsComponent)
+                    player_actions_component.update_possible_actions()
+                    possible_actions = player_actions_component.all_actions
+                    print(possible_actions)
 
                 if (player_input == "skip" or action_points <= 0):
                     current_player_index = (current_player_index + 1) % len(self.players)
@@ -86,6 +90,8 @@ class GameManager:
                     pygame.draw.circle(screen, (255, 0, 0), (move[1] * CASE_SIZE + BOARD_X, move[0] * CASE_SIZE), 5)
                 for position in possible_actions["PossibleLever"]:
                     pygame.draw.circle(screen, (0, 255, 0), (position[1] * CASE_SIZE + BOARD_X, position[0] * CASE_SIZE), 5)
+                for attack in possible_actions["PossibleAttack"]:
+                    pygame.draw.circle(screen, (0, 0, 255), (attack[1] * CASE_SIZE + BOARD_X, attack[0] * CASE_SIZE), 5)
             
             
             for player in self.players:
