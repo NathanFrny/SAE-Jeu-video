@@ -1,6 +1,6 @@
 from entities import Player
 from gameboard import GameboardAdapter
-from components import SpriteRendererComponent, ActionPointComponent
+from components import SpriteRendererComponent, ActionPointComponent, HealthComponent, StrengthComponent, TransformComponent, CoinsComponent
 from utils.constants import SCREEN_HEIGHT, SCREEN_WIDTH, CASE_SIZE, BOARD_X
 from utils.PyFunc import getAllActions
 from manager.InputManager import InputManager
@@ -79,7 +79,7 @@ class GameManager:
     # Implémentez ici la logique de sauvegarde (players et gameboard dans un premier temps)
     def save_game(self, file_path):
         game_data = {
-            "players": [self.players],
+            "players": [],
             "gameboard": []
         }
 
@@ -94,6 +94,13 @@ class GameManager:
 
             # Ajouter le type de l'élément dans le JSON avant ses attributs
             game_data["gameboard"].append(row_data)
+            
+        for row in self.adapter._room_builder._players:
+            row_data = []
+        
+            row_data.append(toJSONPlayer(row))
+                
+            game_data["players"].append(row_data)
 
         with open(file_path, 'w') as file:
             json.dump(game_data, file)
@@ -112,6 +119,21 @@ def toJSONGrid(instance):
     return attributes
 
 
-def toJSONPlayer(instance):
-    
+def toJSONPlayer(player: Player):
+    return {
+        "name": player.name,
+        "max_health": player.get_component(HealthComponent).max_health,
+        "current_health":player.get_component(HealthComponent).current_health,
+        "max_action_point":player.get_component(ActionPointComponent).max_action_points,
+        "current_action_point":player.get_component(ActionPointComponent).current_action_points,
+        "initial_strength":player.get_component(StrengthComponent).initial_strength,
+        "strength":player.get_component(StrengthComponent).strength,
+        "position":player.get_component(TransformComponent).position,
+        # "image":player.get_component(SpriteRendererComponent).image,
+        # "rect":player.get_component(SpriteRendererComponent).rect,
+        # "sprite":player.get_component(SpriteRendererComponent).sprite,
+        "coins":player.get_component(CoinsComponent).coins
+        
+        # Add other attributes as needed
+    }
 
