@@ -1,8 +1,7 @@
-from entities import Player, Slime, Golem, Skeleton, Bat
+from entities import Player, Slime, Golem, Skeleton, Bat, Action
 from gameboard import GameboardAdapter
-from components import SpriteRendererComponent, ActionPointComponent, PlayerActionsComponent
+from components import SpriteRendererComponent, ActionPointComponent, PlayerActionsComponent, TransformComponent
 from utils.constants import *
-from utils.PyFunc import getAllActions
 from manager.InputManager import InputManager
 from random import choice
 import pygame
@@ -20,6 +19,7 @@ class GameManager:
         self.adapter = GameboardAdapter(self.players)
         
         self.input_manager = InputManager()
+        self.current_actions = []
         
     def random_monster_spawning(self):
         """ Spawn monsters randomly on the gameboard.
@@ -65,13 +65,30 @@ class GameManager:
                 if event.type == pygame.QUIT:
                     running = False
 
-                player_input = self.input_manager.get_input(current_player, event)
+                player_input = self.input_manager.get_input(current_player, self.current_actions, event)
                     
                 if (player_input == "getAllActions"):
                     player_actions_component = current_player.get_component(PlayerActionsComponent)
                     player_actions_component.update_possible_actions()
                     possible_actions = player_actions_component.all_actions
-                    print(possible_actions)
+                    for actions, positions in possible_actions.items():
+                        match (actions):
+                            case "PossibleMovement":
+                                for position in positions:
+                                    action = Action("Move", "images/movement.png")
+                                    action.get_component(TransformComponent).position = position
+                                    self.current_actions.append(action)
+                            case "PossibleAttack":
+                                for position in positions:
+                                    action = Action("Attack", "images/action.png")
+                                    action.get_component(TransformComponent).position = position
+                                    self.current_actions.append(action)
+                            case "PossibleLever":
+                                for position in positions:
+                                    action = Action("Lever", "images/action.png")
+                                    action.get_component(TransformComponent).position = position
+                                    self.current_actions.append(action)
+                                    
 
                 if (player_input == "skip" or action_points <= 0):
                     current_player_index = (current_player_index + 1) % len(self.players)
@@ -79,19 +96,9 @@ class GameManager:
                     current_player.get_component(ActionPointComponent).reset_action_point()
                     screen.fill((0, 0, 0))
                     self.adapter.graphic_gameboard.draw(screen)
-
-                # Ajoutez ici la détection de l'input et l'appel de la méthode
                     
             screen.fill((0, 0, 0))
             self.adapter.graphic_gameboard.draw(screen)
-            
-            if "PossibleMovement" in possible_actions:
-                for move in possible_actions["PossibleMovement"]:
-                    pygame.draw.circle(screen, (255, 0, 0), (move[1] * CASE_SIZE + BOARD_X, move[0] * CASE_SIZE), 5)
-                for position in possible_actions["PossibleLever"]:
-                    pygame.draw.circle(screen, (0, 255, 0), (position[1] * CASE_SIZE + BOARD_X, position[0] * CASE_SIZE), 5)
-                for attack in possible_actions["PossibleAttack"]:
-                    pygame.draw.circle(screen, (0, 0, 255), (attack[1] * CASE_SIZE + BOARD_X, attack[0] * CASE_SIZE), 5)
             
             
             for player in self.players:
@@ -99,6 +106,13 @@ class GameManager:
                 sprite = player.get_component(SpriteRendererComponent)
                 if sprite:
                     screen.blit(sprite.image, sprite.rect)
+                    
+            if self.current_actions:
+                for action in self.current_actions:
+                    action.update()
+                    sprite = action.get_component(SpriteRendererComponent)
+                    if sprite:
+                        screen.blit(sprite.image, sprite.rect)
                     
             for monster in self.monsters:
                 monster.update()

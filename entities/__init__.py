@@ -1,5 +1,6 @@
 from .abstract import Entity
 from .abstract import Monster
+from .static import Action
 from .Player import Player
 from .HumanPlayer import HumanPlayer
 from .Skeleton import Skeleton
