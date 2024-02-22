@@ -97,9 +97,7 @@ class PlayerActionsComponent(Component):
                     if (not tile.is_player_on):
                         if isinstance(tile.entity, Monster) and ([new_x, new_y] not in self._possible_attacks):
                             self._possible_attacks.append([new_x, new_y])
-                        
                         if isinstance(tile, (GroundTile, WaterTile, PortalTile, TrapTile, ExitTile)) and ([new_x, new_y] not in self._possible_movements ) and (tile.entity == None) and ([new_x, new_y] not in self._possible_attacks):
-                            print(tile)
                             self._possible_movements.append([new_x, new_y])
                             explore_moves(new_x, new_y, depth_left - 1) 
 

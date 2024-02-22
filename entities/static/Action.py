@@ -38,7 +38,7 @@ class Action(Entity):
             case "Move":
                 entity_position = entity.get_component(TransformComponent).position
                 action_used = distance_calcul(entity_position, self.get_component(TransformComponent).position)
-                entity.get_component(ActionPointComponent).use_action_point(action_used)
+                entity.get_component(ActionPointComponent).use_action_point(int(action_used))
                 entity.get_component(TransformComponent).position = self.get_component(TransformComponent).position
             case "Attack":
                 print("Attack")

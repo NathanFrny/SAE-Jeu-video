@@ -91,7 +91,7 @@ class GameManager:
                                     self.current_actions.append(action)
                                     
 
-                if (player_input == "skip" or action_points <= 0):
+                if (player_input == "skip"):
                     self.current_actions.clear()
                     current_player_index = (current_player_index + 1) % len(self.players)
                     current_player = self.players[current_player_index]
@@ -100,6 +100,9 @@ class GameManager:
                     self.adapter.graphic_gameboard.draw(screen)
                     
             screen.fill((0, 0, 0))
+            background = pygame.image.load("images/background.png")
+            background = pygame.transform.scale(background, (SCREEN_WIDTH, SCREEN_HEIGHT - 10))
+            screen.blit(background, (0, 0))
             self.adapter.graphic_gameboard.draw(screen)
                         
             

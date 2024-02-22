@@ -38,12 +38,8 @@ class InputManager:
                             action.on_click(player)
                             if (player.get_component(TransformComponent).position != position):
                                 grid[position[0]][position[1]].entity = None
+                                grid[position[0]][position[1]].is_player_on = None
                                 grid[player.get_component(TransformComponent).position[0]][player.get_component(TransformComponent).position[1]].entity = player
-                            print('----------')
-                            for row in grid:
-                                for tile in row:
-                                    if tile.entity != None:
-                                        print(grid.index(row), row.index(tile))
                             current_actions.clear()
                 
         if event.type == pygame.KEYDOWN:
