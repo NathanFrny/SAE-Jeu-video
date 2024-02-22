@@ -1,5 +1,6 @@
 from entities import Entity
-from components import TransformComponent, SpriteRendererComponent
+from components import TransformComponent, SpriteRendererComponent, ActionPointComponent
+from utils.PyFunc import distance_calcul
 
 class Action(Entity):
     
@@ -35,6 +36,9 @@ class Action(Entity):
         """
         match (self.name):
             case "Move":
+                entity_position = entity.get_component(TransformComponent).position
+                action_used = distance_calcul(entity_position, self.get_component(TransformComponent).position)
+                entity.get_component(ActionPointComponent).use_action_point(action_used)
                 entity.get_component(TransformComponent).position = self.get_component(TransformComponent).position
             case "Attack":
                 print("Attack")
@@ -44,3 +48,4 @@ class Action(Entity):
                 print("Item")
             case _:
                 print("Action not implemented yet")
+            

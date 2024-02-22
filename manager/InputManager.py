@@ -1,5 +1,6 @@
-from entities import Player, Action
-from components import SpriteRendererComponent
+from entities import Player
+from components import SpriteRendererComponent, TransformComponent
+from tiles import Tile
 import pygame
 
 class InputManager:
@@ -10,7 +11,7 @@ class InputManager:
     # ----------------------------------- Methods ----------------------------------- #
     # ------------------------------------------------------------------------------- #
 
-    def get_input(self, player: Player, current_actions: list, event: pygame.event):
+    def get_input(self, player: Player, current_actions: list, grid: list, event: pygame.event):
         """ Get the input of the player.
 
         Args:
@@ -33,7 +34,17 @@ class InputManager:
                     if sprite_renderer:
                         action_rect = sprite_renderer.sprite.rect
                         if action_rect.collidepoint(mouse_pos):
+                            position = player.get_component(TransformComponent).position
                             action.on_click(player)
+                            if (player.get_component(TransformComponent).position != position):
+                                grid[position[0]][position[1]].entity = None
+                                grid[player.get_component(TransformComponent).position[0]][player.get_component(TransformComponent).position[1]].entity = player
+                            print('----------')
+                            for row in grid:
+                                for tile in row:
+                                    if tile.entity != None:
+                                        print(grid.index(row), row.index(tile))
+                            current_actions.clear()
                 
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_RIGHT:

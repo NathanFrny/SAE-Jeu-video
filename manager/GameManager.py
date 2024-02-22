@@ -55,7 +55,8 @@ class GameManager:
         possible_actions = {}
         current_player_index = 0
         self.players[current_player_index].get_component(ActionPointComponent).reset_action_point()
-
+        for player in self.players:
+            self.adapter.gameboard.grid[player.get_component(TransformComponent).position[0]][player.get_component(TransformComponent).position[1]].entity = player
 
         while running:
             current_player = self.players[current_player_index]
@@ -65,7 +66,7 @@ class GameManager:
                 if event.type == pygame.QUIT:
                     running = False
 
-                player_input = self.input_manager.get_input(current_player, self.current_actions, event)
+                player_input = self.input_manager.get_input(current_player, self.current_actions, self.adapter.gameboard.grid, event)
                     
                 if (player_input == "getAllActions"):
                     player_actions_component = current_player.get_component(PlayerActionsComponent)
@@ -91,6 +92,7 @@ class GameManager:
                                     
 
                 if (player_input == "skip" or action_points <= 0):
+                    self.current_actions.clear()
                     current_player_index = (current_player_index + 1) % len(self.players)
                     current_player = self.players[current_player_index]
                     current_player.get_component(ActionPointComponent).reset_action_point()
@@ -99,7 +101,7 @@ class GameManager:
                     
             screen.fill((0, 0, 0))
             self.adapter.graphic_gameboard.draw(screen)
-            
+                        
             
             for player in self.players:
                 player.update()

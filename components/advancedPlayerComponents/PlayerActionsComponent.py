@@ -2,6 +2,7 @@ from components import Component
 from typing import Dict, List
 from components import TransformComponent, ActionPointComponent
 
+
 class PlayerActionsComponent(Component):
     """ Component that handles the possible actions of the player."""
     
@@ -97,7 +98,8 @@ class PlayerActionsComponent(Component):
                         if isinstance(tile.entity, Monster) and ([new_x, new_y] not in self._possible_attacks):
                             self._possible_attacks.append([new_x, new_y])
                         
-                        if isinstance(tile, (GroundTile, WaterTile, PortalTile, TrapTile, ExitTile)) and ([new_x, new_y] not in self._possible_movements ) and ([new_x, new_y] not in self._possible_attacks):
+                        if isinstance(tile, (GroundTile, WaterTile, PortalTile, TrapTile, ExitTile)) and ([new_x, new_y] not in self._possible_movements ) and (tile.entity == None) and ([new_x, new_y] not in self._possible_attacks):
+                            print(tile)
                             self._possible_movements.append([new_x, new_y])
                             explore_moves(new_x, new_y, depth_left - 1) 
 
