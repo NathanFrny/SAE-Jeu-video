@@ -3,6 +3,7 @@ from components import TransformComponent, SpriteRendererComponent, ActionPointC
 from utils.PyFunc import distance_calcul
 
 class Action(Entity):
+    """ This class represents an action that a player can do. It can be a movement, an attack, activate a lever or take an item."""
     
     def __init__(self, name: str, image_path: str):
         super().__init__()

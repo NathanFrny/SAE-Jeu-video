@@ -1,4 +1,5 @@
 from entities import Player, Slime, Golem, Skeleton, Bat, Action
+from tiles import ExitTile
 from gameboard import GameboardAdapter
 from components import SpriteRendererComponent, ActionPointComponent, PlayerActionsComponent, TransformComponent
 from utils.constants import *
@@ -13,6 +14,9 @@ class GameManager:
         self.monsters = []
         self.monsters_list = ["Slime", "Skeleton", "Golem", "Bat"]
         self.room_level = 12
+        self.levers_count = LEVER_COUNT
+        self.exit: ExitTile = None
+        self.exit_position = [0, 0]
         
         for i in range(players_count):
             self.players.append(Player("Player " + str(i + 1), "images/player" + str(i + 1) + ".png"))
@@ -46,6 +50,16 @@ class GameManager:
         pygame.init()
         screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT - 10))
         self.adapter.draw()
+
+        # Getting the exit tiles and store it into the exit attribute
+        for row in range(self.adapter.gameboard.nb_row):
+            for col in range(self.adapter.gameboard.nb_col):
+                tile = self.adapter.gameboard.grid[row][col]
+                if isinstance(tile, ExitTile):
+                    self.exit = tile
+                    self.exit_position = [row, col]
+                    break
+
         self.random_monster_spawning()
         self.adapter.graphic_gameboard.draw(screen)
         for player in self.players:
@@ -60,7 +74,6 @@ class GameManager:
 
         while running:
             current_player = self.players[current_player_index]
-            action_points = current_player.get_component(ActionPointComponent).current_action_points
             
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
@@ -118,6 +131,10 @@ class GameManager:
                     sprite = action.get_component(SpriteRendererComponent)
                     if sprite:
                         screen.blit(sprite.image, sprite.rect)
+
+            if self.exit.is_closed and self.levers_count <= 0:
+                self.exit.is_closed = False
+                self.adapter.graphic_gameboard.set_image(self.exit_position[0], self.exit_position[1], self.exit.dataTile.variants["open"][0])
                     
             for monster in self.monsters:
                 monster.update()
