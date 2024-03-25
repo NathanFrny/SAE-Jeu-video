@@ -7,3 +7,5 @@ from .StrengthComponent import StrengthComponent
 from .CoinsComponent import CoinsComponent
 
 from .advancedPlayerComponents import PlayerActionsComponent
+
+from .monstersComponents.MonstersComponent import MonstersComponent

@@ -1,7 +1,8 @@
 from entities import Player, Slime, Golem, Skeleton, Bat, Action
-from tiles import ExitTile
+from tiles import ExitTile, LeverTile
 from gameboard import GameboardAdapter
 from components import SpriteRendererComponent, ActionPointComponent, PlayerActionsComponent, TransformComponent
+from components.monstersComponents.SkeletonComponent import SkeletonComponent
 from utils.constants import *
 from manager.InputManager import InputManager
 from random import choice
@@ -31,16 +32,16 @@ class GameManager:
         while self.room_level > 0:
             match choice(self.monsters_list):
                 case "Slime":
-                    self.monsters.append(Slime(SLIME_IMAGE, SLIME_HEALTH, SLIME_ACTION_POINT, SLIME_DAMAGES))
+                    self.monsters.append(Slime("Slime", SLIME_IMAGE, SLIME_HEALTH, SLIME_ACTION_POINT, SLIME_DAMAGES))
                     self.room_level -= SLIME
                 case "Skeleton":
-                    self.monsters.append(Skeleton(SKELETON_IMAGE, SKELETON_HEALTH, SKELETON_ACTION_POINT, SKELETON_DAMAGES))
+                    self.monsters.append(Skeleton("Skeleton", SKELETON_IMAGE, SKELETON_HEALTH, SKELETON_ACTION_POINT, SKELETON_DAMAGES))
                     self.room_level -= SKELETON
                 case "Bat":
-                    self.monsters.append(Bat(BAT_IMAGE, BAT_HEALTH, BAT_ACTION_POINT, BAT_DAMAGES))
+                    self.monsters.append(Bat("Bat", BAT_IMAGE, BAT_HEALTH, BAT_ACTION_POINT, BAT_DAMAGES))
                     self.room_level -= BAT
                 case "Golem":
-                    self.monsters.append(Golem(GOLEM_IMAGE, GOLEM_HEALTH, GOLEM_ACTION_POINT, GOLEM_DAMAGES))
+                    self.monsters.append(Golem("Golem", GOLEM_IMAGE, GOLEM_HEALTH, GOLEM_ACTION_POINT, GOLEM_DAMAGES))
                     self.room_level -= GOLEM
         
         self.adapter.spawn_entities_randomly(self.monsters)
@@ -68,9 +69,13 @@ class GameManager:
         running = True
         possible_actions = {}
         current_player_index = 0
+        self.skip_turn_count = 0
         self.players[current_player_index].get_component(ActionPointComponent).reset_action_point()
         for player in self.players:
             self.adapter.gameboard.grid[player.get_component(TransformComponent).position[0]][player.get_component(TransformComponent).position[1]].entity = player
+        for monster in self.monsters:
+            if (isinstance(monster, Skeleton)):
+                monster.get_component(SkeletonComponent).gameboard = self.adapter.gameboard
 
         while running:
             current_player = self.players[current_player_index]
@@ -79,7 +84,7 @@ class GameManager:
                 if event.type == pygame.QUIT:
                     running = False
 
-                player_input = self.input_manager.get_input(current_player, self.current_actions, self.adapter.gameboard.grid, event)
+                player_input = self.input_manager.get_input(current_player, self.current_actions, self.adapter.gameboard.grid, self.adapter.graphic_gameboard, event)
                     
                 if (player_input == "getAllActions"):
                     player_actions_component = current_player.get_component(PlayerActionsComponent)
@@ -111,6 +116,44 @@ class GameManager:
                     current_player.get_component(ActionPointComponent).reset_action_point()
                     screen.fill((0, 0, 0))
                     self.adapter.graphic_gameboard.draw(screen)
+
+                    self.skip_turn_count += 1
+
+                    if self.skip_turn_count >= len(self.players):
+                        self.skip_turn_count = 0
+
+                        for enemy in self.monsters:
+                            
+                            if isinstance(enemy, Skeleton):
+                                action = enemy.get_component(SkeletonComponent).all_actions
+                                enemy.get_component(SkeletonComponent).update_possible_actions()
+                            if isinstance(enemy, Slime):
+                                #action = enemy.get_component(SlimeComponent).all_actions
+                                #enemy.get_component(SkeletonComponent).update_possible_actions()
+                                pass
+                            if isinstance(enemy, Golem):
+                                #action = enemy.get_component(GolemComponent).all_actions
+                                #enemy.get_component(SkeletonComponent).update_possible_actions()
+                                pass
+                            if isinstance(enemy, Bat):
+                                #action = enemy.get_component(BatComponent).all_actions
+                                #enemy.get_component(SkeletonComponent).update_possible_actions()
+                                pass
+
+                            
+                            if (isinstance(enemy, Skeleton)):
+                                if (action["PossibleAttack"]):
+                                    enemy.attack()
+                                else:
+                                    closest_player_directions = enemy.get_component(SkeletonComponent).findClosestPlayer(self.players)
+                                    print(closest_player_directions)
+                                    print(action['PossibleMovement'])
+                                    for direction in closest_player_directions:
+                                        for movement in action["PossibleMovement"]:
+                                            if movement == direction:
+                                                enemy.move(movement)
+
+
                     
             screen.fill((0, 0, 0))
             background = pygame.image.load("images/background.png")
@@ -131,6 +174,14 @@ class GameManager:
                     sprite = action.get_component(SpriteRendererComponent)
                     if sprite:
                         screen.blit(sprite.image, sprite.rect)
+
+            self.levers_count = 0
+            for row in range(self.adapter.gameboard.nb_row):
+                for col in range(self.adapter.gameboard.nb_col):
+                    if isinstance(self.adapter.gameboard.grid[row][col], LeverTile):
+                        lever = self.adapter.gameboard.grid[row][col]
+                        if not lever.isOn:
+                            self.levers_count += 1
 
             if self.exit.is_closed and self.levers_count <= 0:
                 self.exit.is_closed = False

@@ -102,7 +102,8 @@ class PlayerActionsComponent(Component):
                             explore_moves(new_x, new_y, depth_left - 1) 
 
                         if isinstance(tile, LeverTile) and ([new_x, new_y] not in self._possible_levers):
-                            self._possible_levers.append([new_x, new_y])
+                            if (not tile.isOn):
+                                self._possible_levers.append([new_x, new_y])
 
         explore_moves(*self.current_position, max_depth)
 

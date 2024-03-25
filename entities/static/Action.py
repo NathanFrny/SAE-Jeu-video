@@ -42,9 +42,9 @@ class Action(Entity):
                 entity.get_component(ActionPointComponent).use_action_point(int(action_used))
                 entity.get_component(TransformComponent).position = self.get_component(TransformComponent).position
             case "Attack":
-                print("Attack")
+                entity.get_component(ActionPointComponent).use_action_point(1)
             case "Lever":
-                print("Lever")
+                entity.get_component(ActionPointComponent).use_action_point(1)
             case "Item":
                 print("Item")
             case _:

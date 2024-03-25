@@ -1,6 +1,6 @@
 from entities import Player
 from components import SpriteRendererComponent, TransformComponent
-from tiles import Tile
+from gameboard import GraphicGameboard
 import pygame
 
 class InputManager:
@@ -11,7 +11,7 @@ class InputManager:
     # ----------------------------------- Methods ----------------------------------- #
     # ------------------------------------------------------------------------------- #
 
-    def get_input(self, player: Player, current_actions: list, grid: list, event: pygame.event):
+    def get_input(self, player: Player, current_actions: list, grid: list, graphic_gameboard: GraphicGameboard, event: pygame.event):
         """ Get the input of the player.
 
         Args:
@@ -36,6 +36,12 @@ class InputManager:
                         if action_rect.collidepoint(mouse_pos):
                             position = player.get_component(TransformComponent).position
                             action.on_click(player)
+                            if (action.name == "Lever"):
+                                lever_position = action.get_component(TransformComponent).position
+                                lever = grid[lever_position[0]][lever_position[1]]
+                                lever.isOn = True
+                                image = lever.dataTile.variants["open"][0]
+                                graphic_gameboard.set_image(lever_position[0], lever_position[1], image)
                             if (player.get_component(TransformComponent).position != position):
                                 grid[position[0]][position[1]].entity = None
                                 grid[position[0]][position[1]].is_player_on = None

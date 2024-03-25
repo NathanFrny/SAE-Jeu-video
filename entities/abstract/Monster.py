@@ -21,12 +21,3 @@ class Monster(Entity):
         """
         super().update()    
         
-    def __str__(self) -> str:
-        """ Display the name of the entity on the console and all his component.
-
-        Returns:
-           str : The name of the entity
-        """
-        components_str = ', '.join(str(component) for component in self._components)
-        return f'{self._name} ({components_str})'
-        
