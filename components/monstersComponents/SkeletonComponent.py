@@ -42,6 +42,7 @@ class SkeletonComponent(MonstersComponent):
                     tile = grid[new_x][new_y]
 
                     if (not tile.is_player_on):
+                        #TODO : Check if the tile is a player (add tile.entity for players)
                         if isinstance(tile.entity, Player) and ([new_x, new_y] not in self._possible_attacks):
                             self._possible_attacks.append([new_x, new_y])
                         if isinstance(tile, (GroundTile, WaterTile, PortalTile, TrapTile, ExitTile)) and ([new_x, new_y] not in self._possible_movements ) and (tile.entity == None) and ([new_x, new_y] not in self._possible_attacks):
@@ -56,6 +57,7 @@ class SkeletonComponent(MonstersComponent):
         from tiles import WallTile, LeverTile
         grid = self.gameboard.grid
         nb_row, nb_col = self.gameboard.nb_row, self.gameboard.nb_col
+        self._location = self._parent_entity.get_component(TransformComponent).position
 
         def is_valid_move(row, col):
             if 0 <= row < nb_row and 0 <= col < nb_col:
@@ -91,7 +93,7 @@ class SkeletonComponent(MonstersComponent):
             while node:
                 path.insert(0, node)
                 node = parents[node[0]][node[1]]
-
+            
             return path
 
         alive_players = []
@@ -102,12 +104,12 @@ class SkeletonComponent(MonstersComponent):
             find_closest_player = min([(distance_calcul(self._location, player.get_component(TransformComponent).position), player.get_component(TransformComponent).position) for player in alive_players])
             closest_player = find_closest_player[1]
 
-            shortest_path = dijkstra()
+            shortest_path = [list(node) for node in dijkstra()]
+            
             return shortest_path
         return
     
     def update(self):
-        # Ajoutez ici le code pour mettre à jour le composant
         pass
 
     @property

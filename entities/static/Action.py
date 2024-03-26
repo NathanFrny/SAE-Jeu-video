@@ -1,4 +1,5 @@
 from entities import Entity
+from gameboard import Gameboard
 from components import TransformComponent, SpriteRendererComponent, ActionPointComponent
 from utils.PyFunc import distance_calcul
 
@@ -32,7 +33,7 @@ class Action(Entity):
         """
         super().update()
         
-    def on_click(self, entity: Entity):
+    def on_click(self, entity: Entity, gameboard: Gameboard):
         """ Method called when the action is clicked.
         """
         match (self.name):

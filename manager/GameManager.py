@@ -123,6 +123,7 @@ class GameManager:
                         self.skip_turn_count = 0
 
                         for enemy in self.monsters:
+                            enemy.get_component(ActionPointComponent).reset_action_point()
                             
                             if isinstance(enemy, Skeleton):
                                 action = enemy.get_component(SkeletonComponent).all_actions
@@ -142,12 +143,11 @@ class GameManager:
 
                             
                             if (isinstance(enemy, Skeleton)):
+                                print(action)
                                 if (action["PossibleAttack"]):
                                     enemy.attack()
                                 else:
                                     closest_player_directions = enemy.get_component(SkeletonComponent).findClosestPlayer(self.players)
-                                    print(closest_player_directions)
-                                    print(action['PossibleMovement'])
                                     for direction in closest_player_directions:
                                         for movement in action["PossibleMovement"]:
                                             if movement == direction:
